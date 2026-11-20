@@ -1,0 +1,118 @@
+{
+ "summary": {
+  "vosk": {
+   "words": 108,
+   "correct": 32,
+   "pct_correct": 29.6,
+   "wer": 0.741
+  },
+  "whisper": {
+   "words": 108,
+   "correct": 64,
+   "pct_correct": 59.3,
+   "wer": 0.5
+  }
+ },
+ "rows": [
+  {
+   "text": "HELLO NATHAN",
+   "vosk": "hello nathan",
+   "whisper": " Hello Nathan"
+  },
+  {
+   "text": "OPTICA TECHNOLOGY DESIGN",
+   "vosk": "not only a value",
+   "whisper": " After a ten-hour season"
+  },
+  {
+   "text": "I AM A ZX SPECTRUM",
+   "vosk": "i too am",
+   "whisper": " I am the best veteran"
+  },
+  {
+   "text": "WELCOME TO OPTICOS",
+   "vosk": "welcome to off",
+   "whisper": " Welcome to the update of"
+  },
+  {
+   "text": "ONE TWO THREE FOUR FIVE",
+   "vosk": "one two three four five",
+   "whisper": " 1, 2, 3, solid 5"
+  },
+  {
+   "text": "SIX SEVEN EIGHT NINE TEN",
+   "vosk": "that i'm eight nine ten",
+   "whisper": " 6 7 8 9 10"
+  },
+  {
+   "text": "GOOD MORNING",
+   "vosk": "oh darling",
+   "whisper": " Don't know that I'm not"
+  },
+  {
+   "text": "THIS IS A TEST",
+   "vosk": "this is a pair",
+   "whisper": " This is a test"
+  },
+  {
+   "text": "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG",
+   "vosk": "not road i'm lazy",
+   "whisper": " The wind blows up, scum, sober the lacy dot"
+  },
+  {
+   "text": "PLEASE PRESS ANY KEY",
+   "vosk": "police were funny",
+   "whisper": " Please press any key"
+  },
+  {
+   "text": "GAME OVER",
+   "vosk": "game",
+   "whisper": " Game over!"
+  },
+  {
+   "text": "THE BIRCH CANOE SLID ON THE SMOOTH PLANKS",
+   "vosk": "number place",
+   "whisper": " The Earth can also lay on the smooth plants."
+  },
+  {
+   "text": "GLUE THE SHEET TO THE DARK BLUE BACKGROUND",
+   "vosk": "not allowed",
+   "whisper": " Glue the seed to the dollar, glue the bone"
+  },
+  {
+   "text": "IT IS EASY TO TELL THE DEPTH OF A WELL",
+   "vosk": "it is easy to bay of man",
+   "whisper": " It is easy to tell the best of the women"
+  },
+  {
+   "text": "THESE DAYS A CHICKEN LEG IS A RARE DISH",
+   "vosk": "the space where they",
+   "whisper": " These days I can let this all of this"
+  },
+  {
+   "text": "RICE IS OFTEN SERVED IN ROUND BOWLS",
+   "vosk": "life is awesome",
+   "whisper": " Life is often served in ground walls"
+  },
+  {
+   "text": "THE JUICE OF LEMONS MAKES FINE PUNCH",
+   "vosk": "not a life of land and they are you",
+   "whisper": " The life of Lenin's next time comes"
+  },
+  {
+   "text": "WHAT TIME IS IT",
+   "vosk": "last time",
+   "whisper": " What time is it?"
+  },
+  {
+   "text": "ARE YOU READY",
+   "vosk": "mary",
+   "whisper": " Are you ready?"
+  },
+  {
+   "text": "WE LIKE TO PLAY GAMES ON THE COMPUTER",
+   "vosk": "we like to play games",
+   "whisper": " We like to play games on the computer"
+  }
+ ]
+}

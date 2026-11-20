@@ -4,24 +4,18 @@ speech.tap and speech.tzx. As for Dino Run, the tape holds what the OpticOS ROM
 itself writes: speech.bas is typed into the ROM in the OpticOS test rig, the code
 is put at 45056, and the ROM's own  SAVE "speech" AUTO start  and
 SAVE "speechcode" CODE 45056,n  are recorded off the MIC signal and decoded.
+Also builds speech128.tap/.tzx for a 128K (resident code + banks 4, 6, 1, 3).
 Usage: python3 build.py  (needs pasmo, numpy, scipy, and an OpticOS checkout with
 build/opticos.rom and the rig's libz80.so: set OPTICOS, default /workspace/opticos-repo)"""
 import os, sys, struct, subprocess
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, 'tools'))
 REPO = os.environ.get('OPTICOS', '/workspace/opticos-repo')
 import gen
-gen.generate(); ORG = gen.ORG
-code = open(os.path.join(HERE, 'build', 'speech.bin'), 'rb').read()
 sys.path.insert(0, os.path.join(REPO, 'tools', 'rig'))
 from p3lib import Basic
 from rig import decode_pulses
-prog = [l.rstrip() for l in open(os.path.join(HERE, 'speech.bas')) if l.strip()]
-b = Basic(); s = b.s
-b.line('NEW'); b.enter([l.strip() for l in prog])
-b.line('CLEAR %d' % (ORG - 1))      # BASIC's stacks must sit below the code
-s.load(ORG, code)
-def record(cmd, name, typ):
-    s.mic_start(3); b.line(cmd, 3_000_000_000)
+def record(b, cmd, name, typ):
+    s = b.s; s.mic_start(3); b.line(cmd, 3_000_000_000)
     got = decode_pulses(s.mic_pulses())
     assert len(got) == 2, (name, len(got))
     hdr, data = got
@@ -31,14 +25,29 @@ def record(cmd, name, typ):
         for x in blk[:-1]: p ^= x
         assert p == blk[-1], name
     return [bytes(hdr), bytes(data)]
-blocks = record('SAVE "speech" AUTO start', 'speech', 0)
-assert blocks[1][1:5] == b'OB\x01\x00', 'not an OpticBASIC program'
-blocks += record('SAVE "speechcode" CODE %d,%d' % (ORG, len(code)), 'speechcode', 3)
-assert blocks[3][1:-1] == code and blocks[2][14] | blocks[2][15] << 8 == ORG
-tap = b''.join(struct.pack('<H', len(x)) + x for x in blocks)
-open(os.path.join(HERE, 'speech.tap'), 'wb').write(tap)
-tzx = b'ZXTape!\x1a\x01\x14' + b''.join(b'\x10' + struct.pack('<HH', 1000, len(x)) + x for x in blocks)
-open(os.path.join(HERE, 'speech.tzx'), 'wb').write(tzx)
-print('program speech: %d bytes; speechcode: CODE %d,%d (ends %d); buffers to %d' % (
-    len(blocks[1]) - 2, ORG, len(code), ORG + len(code) - 1, gen.symbols()['bufend'] - 1))
-print('wrote speech.tap (%d bytes) and speech.tzx (%d bytes)' % (len(tap), len(tzx)))
+def tape(m128):
+    """speech.tap/.tzx (48K) or speech128.tap/.tzx (128K: program, resident code, banks 4, 6, 1, 3)"""
+    _, _, _, banks = gen.generate(m128); ORG = gen.ORG128 if m128 else gen.ORG
+    name, cname, bas = ('speech128', 'sp128code', 'speech128.bas') if m128 else ('speech', 'speechcode', 'speech.bas')
+    code = open(os.path.join(HERE, 'build', name + '.bin'), 'rb').read()
+    prog = [l.rstrip() for l in open(os.path.join(HERE, bas)) if l.strip()]
+    b = Basic(); s = b.s
+    b.line('NEW'); b.enter([l.strip() for l in prog])
+    b.line('CLEAR %d' % (ORG - 1))      # BASIC's stacks must sit below the code
+    s.load(ORG, code)
+    blocks = record(b, 'SAVE "%s" AUTO start' % name, name, 0)
+    assert blocks[1][1:5] == b'OB\x01\x00', 'not an OpticBASIC program'
+    blocks += record(b, 'SAVE "%s" CODE %d,%d' % (cname, ORG, len(code)), cname, 3)
+    assert blocks[3][1:-1] == code and blocks[2][14] | blocks[2][15] << 8 == ORG
+    for bank, img in banks:              # the rig is flat 64K: put each bank's image at $C000 and SAVE it
+        s.load(0xC000, bytes(img)); blocks += record(b, 'SAVE "bank%d" CODE 49152,%d' % (bank, len(img)), 'bank%d' % bank, 3)
+        assert blocks[-1][1:-1] == bytes(img)
+    tap = b''.join(struct.pack('<H', len(x)) + x for x in blocks)
+    open(os.path.join(HERE, name + '.tap'), 'wb').write(tap)
+    tzx = b'ZXTape!\x1a\x01\x14' + b''.join(b'\x10' + struct.pack('<HH', 1000, len(x)) + x for x in blocks)
+    open(os.path.join(HERE, name + '.tzx'), 'wb').write(tzx)
+    print('program %s: %d bytes; %s: CODE %d,%d (ends %d); buffers to %d%s' % (
+        name, len(blocks[1]) - 2, cname, ORG, len(code), ORG + len(code) - 1, gen.symbols(name)['bufend'] - 1,
+        ''.join('; bank%d CODE 49152,%d' % (bk, len(im)) for bk, im in banks)))
+    print('wrote %s.tap (%d bytes) and %s.tzx (%d bytes)' % (name, len(tap), name, len(tzx)))
+tape(False); tape(True)

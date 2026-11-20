@@ -1,0 +1,78 @@
+{
+ "summary": {
+  "vosk": {
+   "words": 49,
+   "correct": 11,
+   "pct_correct": 22.4,
+   "wer": 0.796
+  },
+  "whisper": {
+   "words": 49,
+   "correct": 36,
+   "pct_correct": 73.5,
+   "wer": 0.265
+  }
+ },
+ "rows": [
+  {
+   "text": "PLEASE INSERT THE TAPE",
+   "vosk": "please update",
+   "whisper": " Please insert the tape."
+  },
+  {
+   "text": "LOADING COMPLETE",
+   "vosk": "well they please",
+   "whisper": " Golden Conplea"
+  },
+  {
+   "text": "THE WEATHER IS NICE TODAY",
+   "vosk": "not me a nice today",
+   "whisper": " The lever is nice, darling"
+  },
+  {
+   "text": "I LIKE GREEN APPLES",
+   "vosk": "i believe",
+   "whisper": " I like the most"
+  },
+  {
+   "text": "WHERE IS THE STATION",
+   "vosk": "a some",
+   "whisper": " They list a station"
+  },
+  {
+   "text": "HOW ARE YOU",
+   "vosk": "oh no",
+   "whisper": " How are you?"
+  },
+  {
+   "text": "THE CAT SAT ON THE MAT",
+   "vosk": "not",
+   "whisper": " The cat sat on the net"
+  },
+  {
+   "text": "TURN LEFT AT THE NEXT ROAD",
+   "vosk": "left",
+   "whisper": " Turn left at the next slope"
+  },
+  {
+   "text": "MY NAME IS NATHAN",
+   "vosk": "my name is nathan",
+   "whisper": " My name is Nathan"
+  },
+  {
+   "text": "PLAY IT AGAIN",
+   "vosk": "play",
+   "whisper": " Play it again!"
+  },
+  {
+   "text": "THE BATTERY IS LOW",
+   "vosk": "not bad",
+   "whisper": " The matter is old"
+  },
+  {
+   "text": "OPEN THE DOOR PLEASE",
+   "vosk": "oh the police",
+   "whisper": " Open the door please"
+  }
+ ]
+}

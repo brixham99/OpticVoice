@@ -6,12 +6,15 @@ REPO = os.environ.get('OPTICOS', '/workspace/opticos-repo')
 sys.path.insert(0, os.path.join(REPO, 'tools', 'rig'))
 from rig import Spectrum
 import front, gen
-sym = gen.symbols(); code = open(os.path.join(ROOT, 'build', 'speech.bin'), 'rb').read()
-s = Spectrum(os.path.join(REPO, 'build', 'opticos.rom')); s.frame(200); s.load(gen.ORG, code)
+B128 = os.environ.get('BUILD') == '128'
+NAME = 'speech128' if B128 else 'speech'; BASE = gen.ORG128 if B128 else gen.ORG
+sym = gen.symbols(NAME); code = open(os.path.join(ROOT, 'build', NAME + '.bin'), 'rb').read()
+BANK4 = open(os.path.join(ROOT, 'build', 'bank4.bin'), 'rb').read() if B128 else b''   # the rig ignores $7FFD: bank 4 'is' $C000
+s = Spectrum(os.path.join(REPO, 'build', 'opticos.rom')); s.frame(200); s.load(BASE, code); s.load(0xC000, BANK4)
 g = front.load_rules()
 def z80(text):
     tb = sym['textbuf']; s.load(tb, text.encode('latin1') + b'\0')
-    r = s.call(gen.ORG + 6, SP=0x6000, limit=200_000_000)
+    r = s.call(BASE + 6, SP=0x6000, limit=200_000_000)
     n = r['BC']; out = list(s.block(sym['allbuf'], n + 1))
     assert out[-1] == 0xFF, out
     return out[:-1]

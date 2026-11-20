@@ -36,13 +36,18 @@ STOPPED: db 0                   ; 45075
 PITCH:  db NBYTE                ; 45076
 INTON:  db 1                    ; 45077
 VARIANTS: db 1                  ; 45078
-        db 2                    ; 45079: version
+        db 3                    ; 45079: version
+DEVICE: db 0                    ; +24: 0 beeper, 1 AY (128K build only)
+BANKM:  db $10                  ; +25: port $7FFD value to restore after paging (128K build)
+        jp detect               ; +26: n = 1 if 128K paging works, else 0
+        dw dirb                 ; +29: beeper allophone directory (128K: bank, address x 64)
+        dw dira                 ; +31: AY allophone directory (128K)
 
 say_text:
         call convert
         push bc
         ld hl,allbuf
-        call play
+        call speak
         pop bc
         ret
 say_list:
@@ -57,9 +62,16 @@ sl_cnt: ld a,(hl)
         jr sl_cnt
 sl_go:  pop hl
         push bc
-        call play
+        call speak
         pop bc
         ret
+speak:
+ IF M128
+        ld a,(DEVICE)
+        or a
+        jp nz,play_ay
+ ENDIF
+        jp play
 
 ; ---------------------------------------------------------------------
 ; play: HL = allophone codes, $FF ends.  Interrupts are off while it plays;
@@ -108,16 +120,8 @@ q_p2:   ld (vdat),a             ; data bytes of a voiced period
         ld a,d
         ld (vpad),a
         ld a,c
-        and 63
-        add a,a
-        ld e,a
-        ld d,0
-        ld hl,allotab
-        add hl,de
-        ld a,(hl)
-        inc hl
-        ld h,(hl)
-        ld l,a
+        ld hl,dirb
+        call alook
 f_next: ld a,(hl)               ; frame header: 0 end, $80+n n silent frames,
         inc hl                  ; else bits 0-5 = repeats of the 37-byte period that
         or a                    ; follows, bit 6 = voiced (its length follows the pitch)
@@ -180,9 +184,256 @@ qs_w:   ld a,$7F                ; wait for SPACE to be let go, so BASIC does not
         res 5,(hl)
 q_end:  ld a,b
         out ($FE),a
+ IF M128
+        call unpage
+ ENDIF
+        ei
+        ret
+
+; alook: A = allophone code (bits 0-5), HL = its directory -> HL = its data.
+; On the 128K build the directory holds (bank, address) and the bank is paged in at $C000.
+alook:
+ IF M128
+        and 63
+        ld e,a
+        add a,a
+        add a,e
+        ld e,a
+        ld d,0
+        add hl,de
+        ld a,(hl)
+        inc hl
+        ld e,(hl)
+        inc hl
+        ld d,(hl)
+        push bc
+        ld c,a
+        ld a,(BANKM)
+        and $F8
+        or c
+        ld bc,$7FFD
+        out (c),a
+al_pg:  pop bc                  ; (label: the rig's test emulates paging here)
+        ex de,hl
+        ret
+unpage: push bc
+        ld a,(BANKM)
+        ld bc,$7FFD
+        out (c),a
+        pop bc
+        ret
+ ELSE
+        and 63
+        add a,a
+        ld e,a
+        ld d,0
+        add hl,de
+        ld a,(hl)
+        inc hl
+        ld h,(hl)
+        ld l,a
+        ret
+ ENDIF
+
+; detect: n = USR (base+26): 1 if port $7FFD pages RAM at $C000 (a 128K), else 0
+detect: di
+        ld bc,$7FFD
+        ld a,(BANKM)
+        and $F8
+        out (c),a
+        ld hl,$C000
+        ld e,(hl)
+        ld (hl),$55
+        or 1
+        out (c),a
+        ld d,(hl)
+        ld (hl),$AA
+        and $F8
+        out (c),a
+        ld a,(hl)
+        ld (hl),e
+        ld bc,0
+        cp $55
+        jr nz,dt_x
+        ld a,(BANKM)
+        and $F8
+        or 1
+        push bc
+        ld bc,$7FFD
+        out (c),a
+        pop bc
+        ld (hl),d
+        inc c
+dt_x:   push bc
+        ld a,(BANKM)
+        ld bc,$7FFD
+        out (c),a
+        pop bc
         ei
         ret
 poffs:  db 0,4,256-4,256-7      ; pitch levels: mid, low, high, top
+
+ IF M128
+; ---------------------------------------------------------------------
+; play_ay: HL = allophone codes, $FF ends. AY-3-8912 sample playback: tone and
+; noise off, each sample byte indexes aytab (3 pages: volumes A, B, C), one
+; sample every 259 T (13,513 Hz); a voiced period is 128 samples (+ pitch).
+play_ay: di
+        ld (qptr),hl
+        xor a
+        ld (STOPPED),a
+        call ay_on
+a_next: ld a,$7F
+        in a,($FE)
+        rra
+        jp nc,a_stop
+        ld hl,(qptr)
+        ld a,(hl)
+        inc hl
+        ld (qptr),hl
+        cp $FF
+        jp z,a_end
+        ld c,a
+        rlca
+        rlca
+        and 3
+        ld e,a
+        ld d,0
+        ld hl,poffs
+        add hl,de
+        ld a,(PITCH)
+        add a,(hl)
+        sub NBYTE               ; signed offset d
+        ld e,a
+        add a,a
+        add a,a
+        add a,a
+        sub e                   ; 7d
+        sra a                   ; 7d >> 1
+        add a,128               ; L = 128 + 7d/2 samples
+        cp 16
+        jr nc,a_p1
+        ld a,16
+a_p1:   ld d,0
+        cp 129
+        jr c,a_p2
+        sub 128
+        ld d,a
+        ld a,128
+a_p2:   ld (vdat),a
+        ld a,d
+        ld (vpad),a
+        ld a,c
+        ld hl,dira
+        call alook
+af_next: ld a,(hl)
+        inc hl
+        or a
+        jr z,a_next
+        jp m,af_sil
+        push hl
+        pop ix
+        ld c,a
+        ld d,0
+        and $40
+        ld a,128
+        jr z,af_unv
+        ld a,(vpad)
+        ld d,a
+        ld a,(vdat)
+af_unv: ld (fdat),a
+        ld a,d
+        ld (fpad),a
+        ld a,c
+        and $3F
+        ld (frep),a
+af_rep: ld a,(fdat)
+        ld (cnt),a
+        ld c,$FD
+        ld d,aytab/256
+ays_lp:
+;@AYBITS
+        ld a,(fpad)
+        or a
+        jr z,af_np
+        ld (cnt),a
+ayp_lp:
+;@AYPADBITS
+af_np:  ld a,(frep)
+        dec a
+        ld (frep),a
+        jr z,af_done
+        push ix
+        pop hl
+        jr af_rep
+af_done: ld de,128
+        add ix,de
+        push ix
+        pop hl
+        jr af_next
+af_sil: and $7F
+        ld c,a
+as_frm: ld de,1381              ; one period of silence, as the beeper player
+as_lp:  dec de
+        ld a,d
+        or e
+        jr nz,as_lp
+        dec c
+        jp nz,as_frm
+        jp af_next
+a_stop: ld a,1
+        ld (STOPPED),a
+as_w:   ld a,$7F
+        in a,($FE)
+        rra
+        jr nc,as_w
+        ld hl,FLAGS
+        res 5,(hl)
+a_end:  call ay_off
+        call unpage
+        ei
+        ret
+; ay_on: mixer all off (each channel = its volume), fade up to the zero level
+ay_on:  ld bc,$FFFD
+        ld a,7
+        out (c),a
+        ld b,$BF
+        ld a,$3F
+        out (c),a
+        ld e,0
+ao_lp:  call aywr
+        ld a,e
+        cp AYPAD
+        ret z
+        inc e
+        jr ao_lp
+ay_off: ld e,AYPAD
+af_lp:  call aywr
+        ld a,e
+        or a
+        ret z
+        dec e
+        jr af_lp
+; aywr: write the volumes of table entry E, then wait ~30 us
+aywr:   ld d,aytab/256
+        ld c,$FD
+        ld a,8
+aw_lp:  ld b,$FF
+        out (c),a
+        ld b,$BF
+        ex af,af'
+        ld a,(de)
+        out (c),a
+        ex af,af'
+        inc d
+        inc a
+        cp 11
+        jr nz,aw_lp
+        ld a,6
+aw_d:   dec a
+        jr nz,aw_d
+        ret
+ ENDIF
 
 ; ---------------------------------------------------------------------
 ; convert: text at (TEXTPTR) -> allophone codes at allbuf, $FF ended.
@@ -373,7 +624,7 @@ pv_lp:  ld a,(ix+0)
         jr nz,pv_prev
         ld a,b
         call ctabof
-        and $F8
+        and $78
         jr z,pv_prev            ; not in a family
         rrca
         rrca
@@ -422,14 +673,16 @@ pi_lp:  ld a,(ix+0)
         cp 5
         jr nc,pi_nx             ; not a pause
         ld a,c
-        ld b,$80
+        ld b,2                  ; kind: 2 before '?', 1 before '.' (PA5), 0 inside
         cp QMARK
         jr z,pi_mk
-        ld b,$40
+        ld b,1
         cp 4
         jr z,pi_mk
         ld b,0
-pi_mk:  call mark
+pi_mk:  push bc
+        call word
+        pop bc
         ld a,c
         and 63
         ld (ix+0),a
@@ -438,28 +691,96 @@ pi_mk:  call mark
         inc hl
 pi_nx:  inc ix
         jr pi_lp
-pi_end: ld b,$40
-; mark: codes HL .. IX-1 get pitch level B (bits 6-7), if INTON
-mark:   ld a,(INTON)
+pi_end: ld b,1
+; word: codes HL .. IX-1 are one word, B its kind. Pitch levels (bits 6-7): the stressed
+; vowel (flagged by an exception, else the first) of a word of 2+ vowels gets the
+; accent level, the rest the base (lvtab); flags cleared. INTON 0: all level 0.
+word:   ld (wend),ix
+        ld (wst),hl
+        ld c,0
+        ld e,0
+        ld a,(INTON)
         or a
-        ret z
+        jr z,wd_lv
         ld a,b
+        add a,a
+        ld e,a
+        ld d,0
+        ld hl,lvtab
+        add hl,de
+        ld c,(hl)
+        inc hl
+        ld e,(hl)
+wd_lv:  ld a,c
+        ld (wbase),a
+        ld a,e
+        ld (wacc),a
+        ld hl,0
+        ld (wpos),hl
+        xor a
+        ld (wcnt),a
+        ld (wfl),a
+        ld hl,(wst)
+        ld de,(wend)
+w1_lp:  push hl
         or a
+        sbc hl,de
+        pop hl
+        jr z,w1_done
+        ld a,(hl)
+        bit 6,a
+        jr z,w1_nf
+        ld a,(wfl)
+        or a
+        jr nz,w1_nf
+        inc a
+        ld (wfl),a
+        ld (wpos),hl
+w1_nf:  ld a,(hl)
+        push hl
+        call ctabof
+        pop hl
+        and $80
+        jr z,w1_nx
+        ld a,(wcnt)
+        inc a
+        ld (wcnt),a
+        dec a
+        jr nz,w1_nx             ; not the first vowel
+        ld a,(wfl)
+        or a
+        jr nz,w1_nx
+        ld (wpos),hl
+w1_nx:  inc hl
+        jr w1_lp
+w1_done: ld hl,(wst)
+w2_lp:  push hl
+        or a
+        sbc hl,de
+        pop hl
         ret z
-        push ix
+        ld a,(wbase)
+        ld c,a
+        ld a,(wcnt)
+        cp 2
+        jr c,w2_set
+        push hl
+        push de
+        ld de,(wpos)
+        or a
+        sbc hl,de
         pop de
-mk_lp:  ld a,l
-        cp e
-        jr nz,mk_do
-        ld a,h
-        cp d
-        ret z
-mk_do:  ld a,(hl)
+        pop hl
+        jr nz,w2_set
+        ld a,(wacc)
+        ld c,a
+w2_set: ld a,(hl)
         and 63
-        or b
+        or c
         ld (hl),a
         inc hl
-        jr mk_lp
+        jr w2_lp
+lvtab:  db $00,$80, $40,$00, $80,$C0
 ctabof: and 63                  ; A = ctab[A & 63]
         push de
         ld e,a
@@ -794,6 +1115,16 @@ optr:   dw 0
 rpos:   dw 0
 two_a:  db 0
 vdat:   db 0
+wend:   dw 0
+wst:    dw 0
+wpos:   dw 0
+wcnt:   db 0
+wfl:    db 0
+wbase:  db 0
+wacc:   db 0
+cnt:    db 0
+frep:   db 0
+curdir: dw 0
 vpad:   db 0
 fdat:   db 0
 fpad:   db 0

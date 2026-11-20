@@ -1,0 +1,78 @@
+{
+ "summary": {
+  "vosk": {
+   "words": 49,
+   "correct": 16,
+   "pct_correct": 32.7,
+   "wer": 0.776
+  },
+  "whisper": {
+   "words": 49,
+   "correct": 37,
+   "pct_correct": 75.5,
+   "wer": 0.245
+  }
+ },
+ "rows": [
+  {
+   "text": "PLEASE INSERT THE TAPE",
+   "vosk": "please insert not tape",
+   "whisper": " Please insert the tape."
+  },
+  {
+   "text": "LOADING COMPLETE",
+   "vosk": "well then promptly",
+   "whisper": " Golden Concrete"
+  },
+  {
+   "text": "THE WEATHER IS NICE TODAY",
+   "vosk": "not leader is nice today",
+   "whisper": " The lever is nice today"
+  },
+  {
+   "text": "I LIKE GREEN APPLES",
+   "vosk": "are you likely else",
+   "whisper": " I like green apples"
+  },
+  {
+   "text": "WHERE IS THE STATION",
+   "vosk": "well a not station",
+   "whisper": " Well, it's not station"
+  },
+  {
+   "text": "HOW ARE YOU",
+   "vosk": "our little",
+   "whisper": " I'm not in"
+  },
+  {
+   "text": "THE CAT SAT ON THE MAT",
+   "vosk": "not that are not that",
+   "whisper": " The cats head on the map"
+  },
+  {
+   "text": "TURN LEFT AT THE NEXT ROAD",
+   "vosk": "turn left not last long",
+   "whisper": " Turn left at the next road"
+  },
+  {
+   "text": "MY NAME IS NATHAN",
+   "vosk": "now you name is nathan",
+   "whisper": " My name is Nathan"
+  },
+  {
+   "text": "PLAY IT AGAIN",
+   "vosk": "play it again",
+   "whisper": " Play it again"
+  },
+  {
+   "text": "THE BATTERY IS LOW",
+   "vosk": "not after a slow",
+   "whisper": " The battery is low."
+  },
+  {
+   "text": "OPEN THE DOOR PLEASE",
+   "vosk": "oh and not all the police",
+   "whisper": " Open the door please"
+  }
+ ]
+}

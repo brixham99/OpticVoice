@@ -11,16 +11,30 @@ import numpy as np
 from scipy.signal import butter, sosfilt
 from rig import Spectrum
 import front, gen, synth
-sym = gen.symbols(); code = open(os.path.join(ROOT, 'build', 'speech.bin'), 'rb').read()
+B128 = os.environ.get('BUILD') == '128'
+NAME = 'speech128' if B128 else 'speech'; BASE = gen.ORG128 if B128 else gen.ORG
+sym = gen.symbols(NAME); code = open(os.path.join(ROOT, 'build', NAME + '.bin'), 'rb').read()
+BANK4 = open(os.path.join(ROOT, 'build', 'bank4.bin'), 'rb').read() if B128 else b''   # the rig ignores $7FFD: bank 4 'is' $C000
 CLOCK = 3_500_000
 LIMIT = [400_000_000]
 def new_spectrum():
-    s = Spectrum(os.path.join(REPO, 'build', 'opticos.rom')); s.frame(200); s.load(gen.ORG, code); return s
+    s = Spectrum(os.path.join(REPO, 'build', 'opticos.rom')); s.frame(200); s.load(BASE, code); s.load(0xC000, BANK4); return s
 def say(s, text):
     s.load(sym['textbuf'], text.encode('latin1') + b'\0')
     t0 = s_tstates(s); s.mic_start(4)
-    r = s.call(gen.ORG, SP=0x6000, limit=LIMIT[0])
+    r = s.call(BASE, SP=0x6000, limit=LIMIT[0])
     return r['BC'], s.mic_pulses()
+BANKS = {b: open(os.path.join(ROOT, 'build', 'bank%d.bin' % b), 'rb').read() for b in (4, 6, 1, 3)} if B128 else {}
+def say_paged(s, text):
+    """say() with $7FFD paging emulated: at al_pg (just after the OUT) copy the paged bank to $C000"""
+    s.load(sym['textbuf'], text.encode('latin1') + b'\0'); s.load(0x5FF0, b'\x18\xfe')
+    s.poke(0x5FFE, 0xF0); s.poke(0x5FFF, 0x5F); s.setregs(PC=BASE, SP=0x5FFE); left = LIMIT[0]; pages = 0
+    while True:
+        t = s_tstates(s); r = s.run_until2(sym['al_pg'], 0x5FF0, left); left -= s_tstates(s) - t
+        if r == 0: raise TimeoutError('AY say did not return')
+        if r == 2: return s.regs()['BC'], pages
+        bank = s.regs()['AF'] >> 8 & 7; s.load(0xC000, BANKS.get(bank, bytes(16384))); pages += 1
+        s.run_until(0x1FFFF, 1)                        # step off the label
 def s_tstates(s):
     import rig; return rig.lib.z_tstates()
 def reference_runs(codes, F, pitch=synth.NBYTE):
@@ -82,6 +96,16 @@ if __name__ == '__main__':
     okb = waited and back and stopped == 1 and t < 0.05; fails += not okb
     print('SPACE held: STOPPED=%d, %d edges, %.3f s of output, waits for release then returns: %s' % (
         stopped, len(pulses), t, 'PASS' if okb else 'FAIL'))
+    if B128:   # the AY player in the rig: no AY there, but it must run and take the model's time
+        s.load(sym['DEVICE'], b'\x01')
+        for text in texts[:3]:
+            import rig; t0 = rig.lib.z_tstates(); n, pg = say_paged(s, text); dt = rig.lib.z_tstates() - t0
+            s.load(sym['textbuf'], text.encode('latin1') + b'\0'); t1 = rig.lib.z_tstates(); s.call(BASE + 6, SP=0x6000, limit=LIMIT[0])
+            dt -= rig.lib.z_tstates() - t1               # minus the text conversion (same code as the beeper path)
+            want = len(synth.play_ay(front.to_allophones(text, g))) * synth.T_AY
+            ok = abs(dt / want - 1) < 0.05; fails += not ok
+            print('AY %-26s %2d allophones, %.3f s playing (conversion excluded) vs %.3f s model (%+.2f%%): %s' % (text, n, dt / CLOCK, want / CLOCK, 100 * (dt / want - 1), 'PASS' if ok else 'FAIL'))
+        s.load(sym['DEVICE'], b'\x00'); s.load(0xC000, BANK4)
     n, pulses = say(s, 'Go'); okb = s.peek(sym['STOPPED']) == 0 and len(pulses) > 100; fails += not okb
     print('after release: speaks again, STOPPED=%d: %s' % (s.peek(sym['STOPPED']), 'PASS' if okb else 'FAIL'))
     sys.exit(1 if fails else 0)

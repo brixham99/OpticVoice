@@ -1,5 +1,5 @@
 ' ===========================================================
-' OPTICOS SPEECH - phase 2 demo (OpticOS ROM v1.0.3)
+' OPTICOS SPEECH - phase 3 demo, 48K beeper (OpticOS ROM v1.0.3)
 ' Text to speech through the beeper. The machine code block
 ' "speechcode" (CODE 45056,...) does the work:
 '   n = USR 45056  say the text in the text buffer
@@ -11,9 +11,9 @@
 ' POKE 45077,0 = monotone, POKE 45078,0 = no variants.
 ' ===========================================================
 CLEAR 45055
-IF PEEK(45073) <> 83 OR PEEK(45074) <> 80 OR PEEK(45079) <> 2 THEN LOAD "speechcode" CODE
+IF PEEK(45073) <> 83 OR PEEK(45074) <> 80 OR PEEK(45079) <> 3 THEN LOAD "speechcode" CODE
 CLS
-PRINT INK 5; "OpticOS Speech - phase 2"
+PRINT INK 5; "OpticOS Speech - phase 3"
 PRINT
 PRINT "1  Hello Nathan"
 PRINT "2  Optica Technology Design"

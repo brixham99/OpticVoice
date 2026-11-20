@@ -1,0 +1,37 @@
+{
+ "ay_1": {
+  "ref": "hello nathan",
+  "vosk": "can old nathan",
+  "whisper": " Hello Nathan"
+ },
+ "ay_2": {
+  "ref": "optica technology design",
+  "vosk": "top a long time",
+  "whisper": " A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A"
+ },
+ "ay_3": {
+  "ref": "i am a zx spectrum",
+  "vosk": "i am bad at two am",
+  "whisper": " I am a very very strong"
+ },
+ "ay_5": {
+  "ref": "hello nathan are you ready",
+  "vosk": "can all night i'm ready",
+  "whisper": " Hello, Nathan, are you ready?"
+ },
+ "ay_welcome": {
+  "ref": "welcome to opticos",
+  "vosk": "welcome to get off",
+  "whisper": " Welcome to Octatops"
+ },
+ "bp_1": {
+  "ref": "hello nathan",
+  "vosk": "hello nation",
+  "whisper": " Hello Nathan"
+ },
+ "bp_5": {
+  "ref": "hello nathan are you ready",
+  "vosk": "hello dave i'm ready",
+  "whisper": " Hello Nathan, are you ready?"
+ }
+}

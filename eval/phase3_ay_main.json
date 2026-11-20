@@ -1,0 +1,118 @@
+{
+ "summary": {
+  "vosk": {
+   "words": 108,
+   "correct": 39,
+   "pct_correct": 36.1,
+   "wer": 0.713
+  },
+  "whisper": {
+   "words": 108,
+   "correct": 67,
+   "pct_correct": 62.0,
+   "wer": 0.454
+  }
+ },
+ "rows": [
+  {
+   "text": "HELLO NATHAN",
+   "vosk": "hello nathan",
+   "whisper": " Hello Nation"
+  },
+  {
+   "text": "OPTICA TECHNOLOGY DESIGN",
+   "vosk": "update our technology they saw him",
+   "whisper": " After technology design"
+  },
+  {
+   "text": "I AM A ZX SPECTRUM",
+   "vosk": "i slept around",
+   "whisper": " I am the next spectrum"
+  },
+  {
+   "text": "WELCOME TO OPTICOS",
+   "vosk": "well to take off",
+   "whisper": " Welcome to Dr. Goss"
+  },
+  {
+   "text": "ONE TWO THREE FOUR FIVE",
+   "vosk": "one two three four five",
+   "whisper": " 1, 2, 3, 4, 5"
+  },
+  {
+   "text": "SIX SEVEN EIGHT NINE TEN",
+   "vosk": "she said on eight nine ten",
+   "whisper": " 6 7 8 9 10"
+  },
+  {
+   "text": "GOOD MORNING",
+   "vosk": "don't normally and",
+   "whisper": " Don't know what I did."
+  },
+  {
+   "text": "THIS IS A TEST",
+   "vosk": "this is a test",
+   "whisper": " This is a test"
+  },
+  {
+   "text": "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG",
+   "vosk": "not too late for our campus older lazy not",
+   "whisper": " The wood blows up some silver, the lazy dot"
+  },
+  {
+   "text": "PLEASE PRESS ANY KEY",
+   "vosk": "please less any",
+   "whisper": " Please press the key"
+  },
+  {
+   "text": "GAME OVER",
+   "vosk": "game over",
+   "whisper": " laid over"
+  },
+  {
+   "text": "THE BIRCH CANOE SLID ON THE SMOOTH PLANKS",
+   "vosk": "not a lay it on national plan",
+   "whisper": " The Earth can all slid on the smooth glance."
+  },
+  {
+   "text": "GLUE THE SHEET TO THE DARK BLUE BACKGROUND",
+   "vosk": "the she told that allowed",
+   "whisper": " Bloom the sheet to the dollop, bloom that round"
+  },
+  {
+   "text": "IT IS EASY TO TELL THE DEPTH OF A WELL",
+   "vosk": "it is easy to tell that of atlanta",
+   "whisper": " It is easy to tell the depth of the well"
+  },
+  {
+   "text": "THESE DAYS A CHICKEN LEG IS A RARE DISH",
+   "vosk": "these days can't let this atlanta place",
+   "whisper": " These days I can let this all of this"
+  },
+  {
+   "text": "RICE IS OFTEN SERVED IN ROUND BOWLS",
+   "vosk": "life is often served a brown dollars",
+   "whisper": " Life is often served in round doors"
+  },
+  {
+   "text": "THE JUICE OF LEMONS MAKES FINE PUNCH",
+   "vosk": "not to lie somewhere and snakes are you",
+   "whisper": " The slice of Lenin's naysign gun"
+  },
+  {
+   "text": "WHAT TIME IS IT",
+   "vosk": "last time they said",
+   "whisper": " What I miss is"
+  },
+  {
+   "text": "ARE YOU READY",
+   "vosk": "larry",
+   "whisper": " All you ready?"
+  },
+  {
+   "text": "WE LIKE TO PLAY GAMES ON THE COMPUTER",
+   "vosk": "like to play dates are not conclude her",
+   "whisper": " We like to play games on the computer"
+  }
+ ]
+}

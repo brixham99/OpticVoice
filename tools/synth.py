@@ -295,3 +295,87 @@ def render_codes(codes, mode='bits'):
 if __name__ == '__main__':
     import time; t = time.time(); F = build_frames()
     print('allophone data %d bytes, %.1f s' % (sum(frames_bytes(F[n]) for n in NAMES), time.time() - t))
+
+# ---- AY-3-8912 (128K): sample playback through the three channel volume registers
+# (tone and noise off, so each channel outputs its volume level). One byte per sample
+# indexes a table of 256 (A, B, C) volume triples sorted by their summed level.
+T_AY = 259                      # T-states per sample: 128 samples = one 296-bit period exactly
+FS_AY = 3_500_000 / T_AY        # 13,513.5 Hz
+PERIOD_AY = PERIOD * T_BIT // T_AY      # 128
+# AY volume DAC levels (Fuse's table, after M. Westcott's measurements), 0..1
+AY_LEVELS = np.array([0x0000, 0x0385, 0x053D, 0x0770, 0x0AD7, 0x0FD5, 0x15B0, 0x230C,
+                      0x2B4C, 0x43C1, 0x5A4B, 0x732F, 0x9204, 0xAFF1, 0xD921, 0xFFFF]) / 0xFFFF
+def ay_table():
+    """256 (a, b, c) triples, ascending summed level, spread as evenly as the DAC allows"""
+    tri = np.array([(a, b, c) for a in range(16) for b in range(16) for c in range(16)])
+    s = AY_LEVELS[tri].sum(1); order = np.argsort(s, kind='stable'); tri, s = tri[order], s[order]
+    pick = []
+    for t in np.linspace(0, 3, 256):
+        i = int(np.argmin(np.abs(s - t)))
+        while i in pick and i + 1 < len(s): i += 1
+        pick.append(i)
+    pick = sorted(set(pick))
+    cand = [i for i in range(len(s)) if i not in set(pick)]
+    while len(pick) < 256:                       # fill the widest gaps with the triple nearest their middle
+        ps = s[pick]; gaps = np.diff(ps); k = int(np.argmax(gaps)); mid = (ps[k] + ps[k + 1]) / 2
+        j = min(cand, key=lambda i: abs(s[i] - mid)); cand.remove(j); pick = sorted(pick + [j])
+    return tri[pick], s[pick]
+AY_TRI, AY_SUM = ay_table()
+AY_MID = 1.35                   # the summed level that stands for zero (silence, pads)
+AY_SPAN = 1.25                  # +-1.0 of the shaped signal maps to MID +- SPAN
+AY_PAD = int(np.argmin(np.abs(AY_SUM - AY_MID)))
+AY_PRE, AY_DRIVE, AY_GAIN = 0.7, 1.2, 0.32
+def ay_shape(x):
+    if AY_PRE: x = lfilter([1, -AY_PRE], [1], x) / (1 - AY_PRE)
+    return np.tanh(x * AY_GAIN * AY_DRIVE) / np.tanh(AY_DRIVE)
+def ay_resample(seg):
+    X = np.fft.rfft(seg); n = PERIOD_AY // 2 + 1
+    Y = X[:n] * (PERIOD_AY / PERIOD); Y[-1] = Y[-1].real
+    return np.fft.irfft(Y, PERIOD_AY)
+def ay_quant(x, e0=0.0):
+    """nearest table level with first-order error feedback; returns indexes and the carried error"""
+    out = np.zeros(len(x), np.uint8); e = e0; t = AY_MID + AY_SPAN * x
+    for i, v in enumerate(t):
+        u = v - e; k = int(np.clip(np.searchsorted(AY_SUM, u), 1, 255))
+        if abs(AY_SUM[k - 1] - u) < abs(AY_SUM[k] - u): k -= 1
+        out[i] = k; e = AY_SUM[k] - u
+    return out, e
+def frames_ay(name):
+    """as frames(), with 128 one-byte AY samples per period"""
+    out = []
+    for kind, x in synth(name):
+        n = len(x) // PERIOD
+        if kind == 's': out.append((n, None, False)); continue
+        x = ay_shape(x); hop = hop_for(name, kind); e = 0.0
+        for k in range(0, n, hop):
+            rep = min(hop, n - k); seg = x[k * PERIOD:(k + 1) * PERIOD]
+            if np.abs(seg).max() < 0.01: out.append((rep, None, False)); continue
+            q, e = ay_quant(ay_resample(seg), e)
+            out.append((rep, q, kind == 'v'))
+    res = []
+    for f in out:
+        if res and f[1] is None and res[-1][1] is None: res[-1] = (res[-1][0] + f[0], None, False)
+        else: res.append(f)
+    return res
+_FA = {}
+def build_frames_ay():
+    if not _FA:
+        for n in NAMES: _FA[n] = frames_ay(n)
+    return _FA
+def ay_len(pitch, lv):
+    """samples in a voiced AY period for PITCH (bytes, 37 = normal) and level lv (as the Z80)"""
+    d = (pitch + PITCH_OFFS[lv] - NBYTE) & 255; d = d - 256 if d >= 128 else d
+    return max(16, PERIOD_AY + ((d * 7) >> 1))
+def play_ay(codes, F=None, pitch=NBYTE):
+    """the AY summed output level per sample (FS_AY) the Z80 AY player produces"""
+    F = F or build_frames_ay(); out = []; last = AY_PAD
+    for c in codes:
+        lv, name = c >> 6, NAMES[c & 63]; L = ay_len(pitch, lv)
+        for rep, q, v in F[name]:
+            if q is None: seg = np.full(PERIOD_AY * rep, last, np.uint8)
+            else:
+                one = (np.concatenate([q[:L], np.full(max(0, L - PERIOD_AY), AY_PAD, np.uint8)]) if v else q)
+                seg = np.tile(one, rep)
+            out.append(seg); last = seg[-1]
+    idx = np.concatenate(out) if out else np.zeros(1, np.uint8)
+    return AY_SUM[idx]

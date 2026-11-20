@@ -14,6 +14,9 @@ PHRASES = ['HELLO NATHAN', 'OPTICA TECHNOLOGY DESIGN', 'I AM A ZX SPECTRUM', 'WE
            'IT IS EASY TO TELL THE DEPTH OF A WELL', 'THESE DAYS A CHICKEN LEG IS A RARE DISH',
            'RICE IS OFTEN SERVED IN ROUND BOWLS', 'THE JUICE OF LEMONS MAKES FINE PUNCH',
            'WHAT TIME IS IT', 'ARE YOU READY', 'WE LIKE TO PLAY GAMES ON THE COMPUTER']
+HELD = ['PLEASE INSERT THE TAPE', 'LOADING COMPLETE', 'THE WEATHER IS NICE TODAY', 'I LIKE GREEN APPLES',
+        'WHERE IS THE STATION', 'HOW ARE YOU', 'THE CAT SAT ON THE MAT', 'TURN LEFT AT THE NEXT ROAD',
+        'MY NAME IS NATHAN', 'PLAY IT AGAIN', 'THE BATTERY IS LOW', 'OPEN THE DOOR PLEASE']   # held out: not used for tuning
 DIG = dict(zip('0123456789', 'zero one two three four five six seven eight nine'.split()))
 def norm(t):
     t = t.lower().replace('-', ' ')
@@ -62,6 +65,7 @@ ASR = {'vosk': vosk_text, 'whisper': whisper_text}
 def render(text, mode='bits'):
     import front, synth
     codes = front.to_allophones(text, front.load_rules())
+    if mode == 'ay': return synth.play_ay(codes), synth.FS_AY
     if hasattr(synth, 'render_codes'): return synth.render_codes(codes, mode), synth.FS
     if mode == 'float':
         return np.concatenate([synth.shape(synth.synth(front.NAMES[c])) if synth.A[front.NAMES[c]]['k'] != 'pause'
@@ -71,12 +75,12 @@ def render(text, mode='bits'):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument('--tools', default=HERE); ap.add_argument('--mode', default='bits')
     ap.add_argument('--wav'); ap.add_argument('--asr', default='vosk'); ap.add_argument('--quiet', action='store_true')
-    ap.add_argument('--json'); a = ap.parse_args()
+    ap.add_argument('--set', default='main'); ap.add_argument('--json'); a = ap.parse_args()
     a.json = a.json and os.path.abspath(a.json); a.wav = a.wav and os.path.abspath(a.wav)
     sys.path.insert(0, os.path.abspath(a.tools)); os.chdir(os.path.abspath(a.tools))
     tot = {k: [0, 0, 0] for k in a.asr.split(',')}; rows = []
     if a.wav: os.makedirs(a.wav, exist_ok=True)
-    for i, p in enumerate(PHRASES):
+    for i, p in enumerate(HELD if a.set == 'held' else PHRASES):
         x, fs = render(p, a.mode); y = to_audio(x, fs)
         if a.wav: write_wav(os.path.join(a.wav, '%02d_%s.wav' % (i, p.lower().replace(' ', '_')[:30])), y)
         row = {'text': p}
