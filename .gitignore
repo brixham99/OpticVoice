@@ -1,0 +1,5 @@
+ref/
+__pycache__/
+*.pyc
+*.rom
+*.raw
