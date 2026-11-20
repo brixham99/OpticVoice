@@ -1,0 +1,118 @@
+{
+ "summary": {
+  "vosk": {
+   "words": 108,
+   "correct": 31,
+   "pct_correct": 28.7,
+   "wer": 0.741
+  },
+  "whisper": {
+   "words": 108,
+   "correct": 62,
+   "pct_correct": 57.4,
+   "wer": 0.546
+  }
+ },
+ "rows": [
+  {
+   "text": "HELLO NATHAN",
+   "vosk": "hello nathan",
+   "whisper": " Hello Nathan"
+  },
+  {
+   "text": "OPTICA TECHNOLOGY DESIGN",
+   "vosk": "they value",
+   "whisper": " A TIGA TEMALA SEAT THIS IM"
+  },
+  {
+   "text": "I AM A ZX SPECTRUM",
+   "vosk": "i too am",
+   "whisper": " I am a head of a spectrum"
+  },
+  {
+   "text": "WELCOME TO OPTICOS",
+   "vosk": "welcome to our",
+   "whisper": " Welcome to OctaCOS"
+  },
+  {
+   "text": "ONE TWO THREE FOUR FIVE",
+   "vosk": "one two three four five",
+   "whisper": " 1, 2, 3, solid 5"
+  },
+  {
+   "text": "SIX SEVEN EIGHT NINE TEN",
+   "vosk": "see them eight nine ten",
+   "whisper": " 6 CMA 910"
+  },
+  {
+   "text": "GOOD MORNING",
+   "vosk": "oh darling",
+   "whisper": " Don't know that I'm not"
+  },
+  {
+   "text": "THIS IS A TEST",
+   "vosk": "this is a there",
+   "whisper": " This is a test"
+  },
+  {
+   "text": "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG",
+   "vosk": "not late broad base it off",
+   "whisper": " The wind blows up, scumps over the lasey dot"
+  },
+  {
+   "text": "PLEASE PRESS ANY KEY",
+   "vosk": "please were fairly",
+   "whisper": " Please press any key"
+  },
+  {
+   "text": "GAME OVER",
+   "vosk": "game",
+   "whisper": " Game over"
+  },
+  {
+   "text": "THE BIRCH CANOE SLID ON THE SMOOTH PLANKS",
+   "vosk": "number plate on",
+   "whisper": " The Earth can also be on the smooth plants."
+  },
+  {
+   "text": "GLUE THE SHEET TO THE DARK BLUE BACKGROUND",
+   "vosk": "not too loud",
+   "whisper": " Glue the seed to the dollar, glue that alone"
+  },
+  {
+   "text": "IT IS EASY TO TELL THE DEPTH OF A WELL",
+   "vosk": "it is easy to tell about that",
+   "whisper": " It is easy to tell the best of the women"
+  },
+  {
+   "text": "THESE DAYS A CHICKEN LEG IS A RARE DISH",
+   "vosk": "the space combat they",
+   "whisper": " The space of a chemical evidence of a chemical evidence"
+  },
+  {
+   "text": "RICE IS OFTEN SERVED IN ROUND BOWLS",
+   "vosk": "right time",
+   "whisper": " Life is often served in round those"
+  },
+  {
+   "text": "THE JUICE OF LEMONS MAKES FINE PUNCH",
+   "vosk": "not a life of land and they time them",
+   "whisper": " The life of Lenin's next time come"
+  },
+  {
+   "text": "WHAT TIME IS IT",
+   "vosk": "time",
+   "whisper": " time this is"
+  },
+  {
+   "text": "ARE YOU READY",
+   "vosk": "mary",
+   "whisper": " I'll be ready"
+  },
+  {
+   "text": "WE LIKE TO PLAY GAMES ON THE COMPUTER",
+   "vosk": "we'd like to play games",
+   "whisper": " We like to play games on the computer"
+  }
+ ]
+}

@@ -1,0 +1,118 @@
+{
+ "summary": {
+  "vosk": {
+   "words": 108,
+   "correct": 3,
+   "pct_correct": 2.8,
+   "wer": 0.991
+  },
+  "whisper": {
+   "words": 108,
+   "correct": 23,
+   "pct_correct": 21.3,
+   "wer": 0.944
+  }
+ },
+ "rows": [
+  {
+   "text": "HELLO NATHAN",
+   "vosk": "i don't know",
+   "whisper": " Hello no fun"
+  },
+  {
+   "text": "OPTICA TECHNOLOGY DESIGN",
+   "vosk": "ah the time",
+   "whisper": " I took a hour to fight"
+  },
+  {
+   "text": "I AM A ZX SPECTRUM",
+   "vosk": "i'm murder",
+   "whisper": " I am an Instagram"
+  },
+  {
+   "text": "WELCOME TO OPTICOS",
+   "vosk": "well too",
+   "whisper": " Welcome to"
+  },
+  {
+   "text": "ONE TWO THREE FOUR FIVE",
+   "vosk": "one to run all the time",
+   "whisper": " Run to friend all the time"
+  },
+  {
+   "text": "SIX SEVEN EIGHT NINE TEN",
+   "vosk": "i am",
+   "whisper": " The CMA-910"
+  },
+  {
+   "text": "GOOD MORNING",
+   "vosk": "monitor",
+   "whisper": " Good morning."
+  },
+  {
+   "text": "THIS IS A TEST",
+   "vosk": "we'll see",
+   "whisper": " This is my best"
+  },
+  {
+   "text": "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG",
+   "vosk": "ah ah",
+   "whisper": " A great grown heart, a sun, a sober, a rose of heart"
+  },
+  {
+   "text": "PLEASE PRESS ANY KEY",
+   "vosk": "funny",
+   "whisper": " Please press any key"
+  },
+  {
+   "text": "GAME OVER",
+   "vosk": "oh",
+   "whisper": " No, no, no"
+  },
+  {
+   "text": "THE BIRCH CANOE SLID ON THE SMOOTH PLANKS",
+   "vosk": "no move plan",
+   "whisper": " Another combo filled on a smooth cramp"
+  },
+  {
+   "text": "GLUE THE SHEET TO THE DARK BLUE BACKGROUND",
+   "vosk": "lol",
+   "whisper": " Twin fashion, a hollering, a drought"
+  },
+  {
+   "text": "IT IS EASY TO TELL THE DEPTH OF A WELL",
+   "vosk": "well",
+   "whisper": " If you feel free to tell if I have a heart, I will"
+  },
+  {
+   "text": "THESE DAYS A CHICKEN LEG IS A RARE DISH",
+   "vosk": "he available",
+   "whisper": " We've made a secret in our elitist"
+  },
+  {
+   "text": "RICE IS OFTEN SERVED IN ROUND BOWLS",
+   "vosk": "live lounge",
+   "whisper": " Life in the sense of the blind moment"
+  },
+  {
+   "text": "THE JUICE OF LEMONS MAKES FINE PUNCH",
+   "vosk": "i'm somewhere i'll come",
+   "whisper": " I'm a random snake, I'm a..."
+  },
+  {
+   "text": "WHAT TIME IS IT",
+   "vosk": "oh time",
+   "whisper": " I'm in the..."
+  },
+  {
+   "text": "ARE YOU READY",
+   "vosk": "ah well",
+   "whisper": " I will read it"
+  },
+  {
+   "text": "WE LIKE TO PLAY GAMES ON THE COMPUTER",
+   "vosk": "when i up",
+   "whisper": " When I look to grow old, I'm a computer"
+  }
+ ]
+}

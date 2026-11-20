@@ -1,0 +1,118 @@
+{
+ "summary": {
+  "vosk": {
+   "words": 108,
+   "correct": 22,
+   "pct_correct": 20.4,
+   "wer": 0.815
+  },
+  "whisper": {
+   "words": 108,
+   "correct": 54,
+   "pct_correct": 50.0,
+   "wer": 0.602
+  }
+ },
+ "rows": [
+  {
+   "text": "HELLO NATHAN",
+   "vosk": "can be fun",
+   "whisper": " Can all may son"
+  },
+  {
+   "text": "OPTICA TECHNOLOGY DESIGN",
+   "vosk": "they saw am",
+   "whisper": " After a technology design"
+  },
+  {
+   "text": "I AM A ZX SPECTRUM",
+   "vosk": "i too am",
+   "whisper": " I am a SSSS"
+  },
+  {
+   "text": "WELCOME TO OPTICOS",
+   "vosk": "ma'am",
+   "whisper": " Welcome to"
+  },
+  {
+   "text": "ONE TWO THREE FOUR FIVE",
+   "vosk": "one two three four five",
+   "whisper": " 1, 2, 3, 4, 5"
+  },
+  {
+   "text": "SIX SEVEN EIGHT NINE TEN",
+   "vosk": "eight nine ten",
+   "whisper": " 6 CNA 9 10"
+  },
+  {
+   "text": "GOOD MORNING",
+   "vosk": "don't know",
+   "whisper": " total dollar in"
+  },
+  {
+   "text": "THIS IS A TEST",
+   "vosk": "this is shot",
+   "whisper": " This is a test"
+  },
+  {
+   "text": "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG",
+   "vosk": "not too lazy",
+   "whisper": " The wind blows up so"
+  },
+  {
+   "text": "PLEASE PRESS ANY KEY",
+   "vosk": "police were",
+   "whisper": " Please press any key"
+  },
+  {
+   "text": "GAME OVER",
+   "vosk": "game",
+   "whisper": " Game over"
+  },
+  {
+   "text": "THE BIRCH CANOE SLID ON THE SMOOTH PLANKS",
+   "vosk": "not really",
+   "whisper": " The Earth can all sleep on the same glance"
+  },
+  {
+   "text": "GLUE THE SHEET TO THE DARK BLUE BACKGROUND",
+   "vosk": "don't see a lot",
+   "whisper": " Gloom the sea to the dawn of the dark cloud"
+  },
+  {
+   "text": "IT IS EASY TO TELL THE DEPTH OF A WELL",
+   "vosk": "it is easy to man",
+   "whisper": " This is easy to turn a dance on a winner"
+  },
+  {
+   "text": "THESE DAYS A CHICKEN LEG IS A RARE DISH",
+   "vosk": "the space",
+   "whisper": " The space of the candle at this time of this"
+  },
+  {
+   "text": "RICE IS OFTEN SERVED IN ROUND BOWLS",
+   "vosk": "life is a",
+   "whisper": " Rice is often served in round doors"
+  },
+  {
+   "text": "THE JUICE OF LEMONS MAKES FINE PUNCH",
+   "vosk": "not know they are you today",
+   "whisper": " The life of women's makes I go"
+  },
+  {
+   "text": "WHAT TIME IS IT",
+   "vosk": "ty",
+   "whisper": " I'm dying this is"
+  },
+  {
+   "text": "ARE YOU READY",
+   "vosk": "reddit",
+   "whisper": " on your way"
+  },
+  {
+   "text": "WE LIKE TO PLAY GAMES ON THE COMPUTER",
+   "vosk": "we like to a baby",
+   "whisper": " We like to play games on the computer"
+  }
+ ]
+}

@@ -21,11 +21,17 @@ if not words:
     words = [w for w in src if w.isalpha()][::40] + ["Hello Nathan", "Optica Technology Design", "I am a ZX Spectrum",
              "The quick brown fox, jumps over the lazy dog.", "It's 2026 - what's new?", "  lots   of   spaces  ",
              "Shouldn't we?", "CHURCH cheese thing shoe", "ELY ING ER ES ED", "x", "", "...", "Wh", "Judge"]
-bad = 0
-for w in words:
-    a, b = z80(w), front.to_allophones(w, g)
-    if a != b:
-        bad += 1
-        if bad <= 15: print('DIFF %r\n  z80 %s\n  py  %s' % (w, ' '.join(front.NAMES[c] for c in a), ' '.join(front.NAMES[c] for c in b)))
-print('%d texts, %d differ' % (len(words), bad))
+def nm(c): return front.NAMES[c & 63] + ('', '_lo', '_hi', '_top')[c >> 6]
+bad = n = 0
+EXTRA = ["What time is it?", "Are you ready? Yes! Go.", "Take the table, Kate; then: kick.", "a? b. c, d - e", "?", "...?",
+         "Glue the sheet. To the dark blue background?", "one 2 three? 45!", "Hello Nathan."]
+for inton, var in ((1, 1), (0, 1), (1, 0), (0, 0)):
+    s.load(sym['INTON'], bytes([inton, var]))
+    for w in (words if (inton, var) == (1, 1) else []) + EXTRA:
+        a, b = z80(w), front.to_allophones(w, g, inton=bool(inton), variants=bool(var)); n += 1
+        if a != b:
+            bad += 1
+            if bad <= 15: print('DIFF %r inton %d variants %d\n  z80 %s\n  py  %s' % (w, inton, var, ' '.join(map(nm, a)), ' '.join(map(nm, b))))
+s.load(sym['INTON'], bytes([1, 1]))
+print('%d conversions, %d differ' % (n, bad))
 sys.exit(1 if bad else 0)

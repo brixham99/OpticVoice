@@ -1,0 +1,118 @@
+{
+ "summary": {
+  "vosk": {
+   "words": 108,
+   "correct": 8,
+   "pct_correct": 7.4,
+   "wer": 0.944
+  },
+  "whisper": {
+   "words": 108,
+   "correct": 19,
+   "pct_correct": 17.6,
+   "wer": 5.583
+  }
+ },
+ "rows": [
+  {
+   "text": "HELLO NATHAN",
+   "vosk": "no fun",
+   "whisper": " I don't know something"
+  },
+  {
+   "text": "OPTICA TECHNOLOGY DESIGN",
+   "vosk": "file",
+   "whisper": " A tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata tata"
+  },
+  {
+   "text": "I AM A ZX SPECTRUM",
+   "vosk": "i too am",
+   "whisper": " I am a sadest sta- I am a sadest sta-"
+  },
+  {
+   "text": "WELCOME TO OPTICOS",
+   "vosk": "well",
+   "whisper": " Welcome to Market to Pulse"
+  },
+  {
+   "text": "ONE TWO THREE FOUR FIVE",
+   "vosk": "one for five",
+   "whisper": " Run, turn, turn, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall, fall"
+  },
+  {
+   "text": "SIX SEVEN EIGHT NINE TEN",
+   "vosk": "so no or ten",
+   "whisper": " See you soon and out, out and..."
+  },
+  {
+   "text": "GOOD MORNING",
+   "vosk": "london",
+   "whisper": ""
+  },
+  {
+   "text": "THIS IS A TEST",
+   "vosk": "stuff",
+   "whisper": " This is my test."
+  },
+  {
+   "text": "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG",
+   "vosk": "well so close",
+   "whisper": " The Great Home Office of the Silver"
+  },
+  {
+   "text": "PLEASE PRESS ANY KEY",
+   "vosk": "one",
+   "whisper": " Friends, rest and end"
+  },
+  {
+   "text": "GAME OVER",
+   "vosk": "no",
+   "whisper": " Don't go for it"
+  },
+  {
+   "text": "THE BIRCH CANOE SLID ON THE SMOOTH PLANKS",
+   "vosk": "us",
+   "whisper": " For the channels will not be sent to the"
+  },
+  {
+   "text": "GLUE THE SHEET TO THE DARK BLUE BACKGROUND",
+   "vosk": "when to our",
+   "whisper": " Dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten, da-dron-fisten,"
+  },
+  {
+   "text": "IT IS EASY TO TELL THE DEPTH OF A WELL",
+   "vosk": "",
+   "whisper": " It is a system that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found out that I have found"
+  },
+  {
+   "text": "THESE DAYS A CHICKEN LEG IS A RARE DISH",
+   "vosk": "or sure",
+   "whisper": " In stone slasher, red red is horrendous"
+  },
+  {
+   "text": "RICE IS OFTEN SERVED IN ROUND BOWLS",
+   "vosk": "browse round the risk",
+   "whisper": " I so often said that without the reason"
+  },
+  {
+   "text": "THE JUICE OF LEMONS MAKES FINE PUNCH",
+   "vosk": "i i'm no filed",
+   "whisper": " I swear that's not a fine cut"
+  },
+  {
+   "text": "WHAT TIME IS IT",
+   "vosk": "the time",
+   "whisper": " I"
+  },
+  {
+   "text": "ARE YOU READY",
+   "vosk": "read it",
+   "whisper": " I'm ready"
+  },
+  {
+   "text": "WE LIKE TO PLAY GAMES ON THE COMPUTER",
+   "vosk": "when i grow know",
+   "whisper": " When I get in great hopes I'm fucking in turn"
+  }
+ ]
+}

@@ -12,13 +12,15 @@ NAMES = ('PA1 PA2 PA3 PA4 PA5 OY AY EH KK3 PP JH NN1 IH TT2 RR1 AX MM TT1 DH1 IY
          'AE HH1 BB1 TH UH UW2 AW DD2 GG3 VV GG1 SH ZH RR2 FF KK2 KK1 ZZ NG LL WW XR WH YY1 CH ER1 ER2 '
          'OW DH2 SS NN2 HH2 OR AR YR GG2 EL BB2').split()
 CODE = {n: i for i, n in enumerate(NAMES)}
+QMARK = 0x44                    # '?' while converting: PA5 + a question flag (bit 6), cleared by postprocess
+CODE['PAQ'] = QMARK
 # NRL phoneme -> allophone(s)
 PH = {'IY': 'IY', 'IH': 'IH', 'EY': 'EY', 'EH': 'EH', 'AE': 'AE', 'AA': 'AA', 'AO': 'AO', 'OW': 'OW', 'UH': 'UH',
       'UW': 'UW2', 'ER': 'ER1', 'AX': 'AX', 'AH': 'AX', 'AY': 'AY', 'AW': 'AW', 'OY': 'OY', 'Y': 'YY1', 'P': 'PP',
       'B': 'BB1', 'T': 'TT1', 'D': 'DD1', 'K': 'KK1', 'G': 'GG1', 'F': 'FF', 'V': 'VV', 'TH': 'TH', 'DH': 'DH1',
       'S': 'SS', 'Z': 'ZZ', 'SH': 'SH', 'ZH': 'ZH', 'HH': 'HH1', 'CH': 'CH', 'JH': 'JH', 'M': 'MM', 'N': 'NN1',
       'NX': 'NG', 'L': 'LL', 'W': 'WW', 'WH': 'WH', 'R': 'RR1',
-      '< >': 'PA2', '<,>': 'PA4', '<.>': 'PA5', '<?>': 'PA5', '<->': 'PA4'}
+      '< >': 'PA2', '<,>': 'PA4', '<.>': 'PA5', '<?>': 'PAQ', '<->': 'PA4'}
 # exceptions: whole words, tried before the rules (they are rules with space contexts)
 EXCEPTIONS = {
     'A': 'AX', 'THE': 'DH AX', 'OF': 'AX V', 'TO': 'T UW', 'DO': 'D UW', 'YOU': 'Y UW', 'ARE': 'AA R',
@@ -111,10 +113,11 @@ def _right(pat, t, i):
     return True
 
 def normalise(text):
-    t = ''.join(c if c.isalnum() or c in " ,.?-'" else ' ' for c in text.upper())
+    text = text.translate(str.maketrans('!;:', '.,,'))
+    t = ''.join(c if (c.isascii() and c.isalnum()) or c in " ,.?-'" else ' ' for c in text.upper())
     return ' ' + re.sub(' +', ' ', t).strip() + ' '
 
-def to_allophones(text, groups=None, trace=False):
+def to_allophones(text, groups=None, trace=False, **post):
     groups = groups or load_rules(); t = normalise(text); i = 0; out = []
     while i < len(t):
         for left, match, right, o in groups.get(t[i], []):
@@ -125,10 +128,56 @@ def to_allophones(text, groups=None, trace=False):
     # merge runs of pauses: keep the longest
     res = []
     for c in out:
-        if c <= 4 and res and res[-1] <= 4: res[-1] = max(res[-1], c)
+        if c & 63 <= 4 and res and res[-1] & 63 <= 4: res[-1] = max(res[-1], c)
         else: res.append(c)
-    while res and res[0] <= 4: res.pop(0)
-    return res
+    while res and res[0] & 63 <= 4: res.pop(0)
+    return postprocess(res, **post)
+
+# ---- after the rules: context variants of the allophones, then intonation (pitch levels in
+# bits 6-7: 0 mid, 1 low, 2 high). The Z80 converter does the same with the same tables.
+CLS_P, CLS_C, CLS_F, CLS_B, CLS_L = range(5)       # pause, consonant, front vowel/glide, back vowel/glide, liquid
+FRONTV = 'IY IH EY EH AE YR XR YY1 YY2'.split()
+BACKV = 'AA AO OW UH UW1 UW2 AW OY OR AR AX ER1 ER2 AY EL WW WH'.split()
+LIQ = 'LL RR1 RR2'.split()
+def _cls(n):
+    if n.startswith('PA'): return CLS_P
+    return CLS_F if n in FRONTV else CLS_B if n in BACKV else CLS_L if n in LIQ else CLS_C
+# family: members, then the variant for next class P C F B L when the previous allophone is not a
+# consonant, then the same when it is
+FAMILIES = [
+    ('KK1 KK2 KK3', 'KK2 KK2 KK1 KK3 KK3', None), ('GG1 GG2 GG3', 'GG2 GG2 GG1 GG3 GG3', None),
+    ('TT1 TT2', 'TT1 TT1 TT2 TT2 TT2', None), ('DD1 DD2', 'DD1 DD1 DD2 DD2 DD2', None),
+    ('BB1 BB2', 'BB1 BB1 BB2 BB2 BB2', None), ('HH1 HH2', 'HH2 HH2 HH1 HH2 HH2', None),
+    ('NN1 NN2', 'NN2 NN2 NN1 NN1 NN1', None), ('DH1 DH2', 'DH2 DH2 DH1 DH1 DH1', None),
+    ('RR1 RR2', 'RR1 RR1 RR1 RR1 RR1', 'RR2 RR2 RR2 RR2 RR2'), ('LL EL', 'LL LL LL LL LL', 'EL EL LL LL LL')]
+def variant_tables():
+    """ctab[64] = class | family << 3; vtab = 10 bytes per family"""
+    ctab = [_cls(n) for n in NAMES]; vtab = []
+    for f, (mem, a, b) in enumerate(FAMILIES):
+        for m in mem.split(): ctab[CODE[m]] |= (f + 1) << 3
+        vtab += [CODE[x] for x in a.split()] + [CODE[x] for x in (b or a).split()]
+    return ctab, vtab
+CTAB, VTAB = variant_tables()
+def postprocess(codes, variants=True, inton=True):
+    c = list(codes)
+    if variants:
+        for i in range(len(c)):
+            fam = CTAB[c[i] & 63] >> 3
+            if not fam or c[i] & 0xC0: continue
+            nxt = CTAB[c[i + 1] & 63] & 7 if i + 1 < len(c) else CLS_P
+            prv = 5 if i and CTAB[c[i - 1] & 63] & 7 == CLS_C else 0
+            c[i] = VTAB[(fam - 1) * 10 + prv + nxt]
+    # intonation: the last word before '.', '?' or the end falls (low); before '?' it rises (high)
+    start = 0
+    for i in range(len(c) + 1):
+        p = c[i] if i < len(c) else 4
+        if p & 63 > 4: continue
+        lv = 2 if p == QMARK else 1 if p & 63 == 4 else 0
+        if inton and lv:
+            for j in range(start, i): c[j] = (c[j] & 63) | lv << 6
+        if i < len(c): c[i] = p & 63
+        start = i + 1
+    return c
 
 # ---- packing for the Z80: each rule = left (reversed) | match | right | output, each part ending with bit 7
 # set on its last byte; an empty part is a single $80. A group ends with $FF.
@@ -143,7 +192,7 @@ def encode(groups):
     for ch in sorted(groups):
         index[ch] = len(data)
         for left, match, right, out in groups[ch]:
-            assert 0 not in out          # PA1 never in a rule: $80 means an empty part
+            assert all(0 < x < 128 for x in out)  # PA1 never in a rule: $80 means an empty part
             data += _part(left[::-1]) + _part(match[1:], True) + _part(right) + _part(out)
         data.append(0xFF)
     return index, bytes(data)
