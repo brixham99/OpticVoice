@@ -47,6 +47,24 @@ Screens from Fuse 1.6.0 (SDL) running `build/opticos.rom`, captured by
 | ![Typing text](shots/fuse128_typing.png) | ![D: beeper](shots/fuse128_beeper.png) |
 | Typing your own text | D switches to the beeper, and back |
 
+### OpticBASIC 128: a `SAY` keyword (prototype)
+
+| | |
+|---|---|
+| ![SAY typed and spoken](shots/say_spoken.png) | ![say128 loaded](shots/say_loaded.png) |
+| `SAY "HELLO NATHAN"`, `SAY a$` in a PROC, `SAY VOICE`, `SAY PITCH` | `say128.tzx`: `SAY LOAD` fills banks 4, 6, 1, 3 |
+
+On a 128K with OpticOS in ROM slot 0 and the new **extension ROM** in slot 1 (built by
+`tools/gen.py` as `build/opticos128ext.rom`, from `src/ext128_main.asm` and the speech
+code), `SAY` is a statement: no CLEAR, nothing resident in RAM. OpticOS needs a
+14-byte hook, on its branch `opticos128-say`. Design, syntax, the hook and the
+limitations: [`docs/opticbasic128-say.md`](docs/opticbasic128-say.md). Listen:
+[`audio/say_demo.mp3`](audio/say_demo.mp3) (Fuse: SAY with the AY, a PROC, then the beeper).
+
+    fuse --machine 128 --rom-128-0 opticos.rom --rom-128-1 build/opticos128ext.rom --tape say128.tzx
+    LOAD ""                     (runs SAY LOAD, then SAY "Speech is ready.")
+    SAY "HELLO NATHAN"
+
 ## Quick start
 
     LOAD ""            (speech.tzx: BASIC "speech" auto-runs, then CODE "speechcode")
@@ -365,6 +383,7 @@ model in `ref/vosk/`.
     python3 tools/test_play.py "text" …    # USR 45056 in the rig; speaker edges vs the reference; SPACE stop; audio/*.wav
     python3 tools/fuse_test.py     # real Fuse: LOAD "", presets, P/M, SPACE, LIST; shots/*.png, audio/fuse_*.wav
     BUILD=128 python3 tools/test_play.py "text" …   # 128K build: beeper from bank 4, AY path with paging emulated
+    python3 tools/fuse_say_test.py # real Fuse 128K, OpticOS 128 (branch ROM + extension ROM): SAY; shots/say_*.png, audio/say_*.wav
     python3 tools/fuse128_test.py  # real Fuse 128K: speech128.tzx, AY and beeper; shots/fuse128_*.png, audio/fuse128_*.wav
     python3 tools/evaluate.py --asr vosk,whisper [--tools DIR] [--mode bits|float|ay] [--set main|held]
 

@@ -50,4 +50,18 @@ def tape(m128):
         name, len(blocks[1]) - 2, cname, ORG, len(code), ORG + len(code) - 1, gen.symbols(name)['bufend'] - 1,
         ''.join('; bank%d CODE 49152,%d' % (bk, len(im)) for bk, im in banks)))
     print('wrote %s.tap (%d bytes) and %s.tzx (%d bytes)' % (name, len(tap), name, len(tzx)))
-tape(False); tape(True)
+def tape_ext():
+    """say128.tap/.tzx for OpticOS 128 (the SAY extension ROM): the program and banks 4, 6, 1, 3"""
+    _, _, _, banks = gen.generate(True)
+    prog = [l.rstrip() for l in open(os.path.join(HERE, 'say128.bas')) if l.strip()]
+    b = Basic(); s = b.s
+    b.line('NEW'); b.enter([l.strip() for l in prog])
+    blocks = record(b, 'SAVE "say128" AUTO start', 'say128', 0)
+    for bank, img in banks:
+        s.load(0xC000, bytes(img)); blocks += record(b, 'SAVE "bank%d" CODE 49152,%d' % (bank, len(img)), 'bank%d' % bank, 3)
+    tap = b''.join(struct.pack('<H', len(x)) + x for x in blocks)
+    open(os.path.join(HERE, 'say128.tap'), 'wb').write(tap)
+    open(os.path.join(HERE, 'say128.tzx'), 'wb').write(b'ZXTape!\x1a\x01\x14' + b''.join(b'\x10' + struct.pack('<HH', 1000, len(x)) + x for x in blocks))
+    print('wrote say128.tap/.tzx: program %d bytes + banks %s' % (len(blocks[1]) - 2, ', '.join(str(b) for b, _ in banks)))
+    gen.generate(True, True)
+tape(False); tape(True); tape_ext()

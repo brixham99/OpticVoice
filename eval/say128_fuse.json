@@ -1,0 +1,27 @@
+{
+ "hello": {
+  "ref": "hello nathan",
+  "vosk": "hello nathan",
+  "whisper": " Hello Nathan"
+ },
+ "question": {
+  "ref": "hello nathan are you ready",
+  "vosk": "hello nice i'm ready",
+  "whisper": " Hello, Mason, I'm ready"
+ },
+ "optica": {
+  "ref": "optica technology design",
+  "vosk": "not only time",
+  "whisper": " I'm not a bad man, I'm a bad man"
+ },
+ "buzzer": {
+  "ref": "hello nathan",
+  "vosk": "hello nathan",
+  "whisper": " Hello Nathan"
+ },
+ "high": {
+  "ref": "hello nathan",
+  "vosk": "can i know some",
+  "whisper": " They'll only something"
+ }
+}
