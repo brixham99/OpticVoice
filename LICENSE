@@ -1,0 +1,38 @@
+ZX-Synth-Speak (software speech synthesiser for OpticOS). Copyright (c) 2026 Optica Technology Design.
+
+This repository is dual-licensed, as OpticOS is:
+
+1. CODE - MIT License
+   Applies to all source code and tools: *.asm, *.bas, *.py and any data
+   generated from them (allophone sound data, rule tables, binaries, speech.tap, speech.tzx).
+
+   Permission is hereby granted, free of charge, to any person obtaining a copy
+   of this software and associated documentation files (the "Software"), to deal
+   in the Software without restriction, including without limitation the rights
+   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+
+   The above copyright notice and this permission notice shall be included in
+   all copies or substantial portions of the Software.
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.
+
+2. ARTWORK AND TEXT - Creative Commons Attribution 4.0 International
+   (CC BY 4.0), https://creativecommons.org/licenses/by/4.0/
+   Applies to the written documents (README.md), the screenshots in shots/ and
+   the audio samples in audio/.
+   Allophone names and numbering follow the General Instrument SP0256-AL2 for
+   familiarity only; all sounds are newly synthesised. The letter-to-sound rules
+   are based on the public-domain 1976 NRL report (Elovitz et al.).
+
+This is original, clean-room work. It contains no Sinclair, Amstrad or other
+ROM code, and no ROM image; it needs the OpticOS ROM
+(https://github.com/brixham99/OpticOS). "ZX Spectrum" and "Sinclair" are used
+only to name the machine and belong to their respective owners.
