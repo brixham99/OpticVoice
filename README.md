@@ -44,6 +44,8 @@ What it prints on RUN (plain lines, no screen clearing):
     1-5 presets, HELP. ENTER on its own quits.
     Say?
 
+**Memory (48K, OpticOS v1.0.4, measured in Fuse and the test rig):** with OpticVoice loaded and waiting at `Say?`, OpticBASIC's `FREE` reports **13,541 bytes** (13,485 after a phrase has been typed, because `a$` now holds it). The BASIC program takes 2,523 bytes (24048–26570), and its variables and strings take 59 + 20. OpticOS's stacks take 4,864 bytes below RAMTOP 45055. The machine code and data take 18,231 bytes (45056–63286), and the text and allophone buffers take 1,032 (63287–64318). **1,217 bytes (64319–65535) are unused**; OpticOS has no UDGs and doesn't use that area after `CLEAR 45055`.
+
 ### OpticBASIC 128: a `SAY` keyword (prototype)
 
 On a 128K with OpticOS in ROM slot 0 and the new **extension ROM** in slot 1 (built by
