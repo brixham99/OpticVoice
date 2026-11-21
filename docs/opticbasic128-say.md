@@ -1,7 +1,7 @@
 # OpticBASIC 128: SAY (design and phase 1 prototype)
 
 `SAY "HELLO NATHAN"` typed at the OpticBASIC prompt on a 128K Spectrum, spoken by
-ZX-Synth-Speak (phase 3 voice) through the AY chip or the beeper. Only OpticOS ROMs
+OpticVoice (phase 3 voice) through the AY chip or the beeper. Only OpticOS ROMs
 are used: OpticOS in ROM slot 0, and a new clean-room **extension ROM** in slot 1.
 No Sinclair ROM (48K or 128K) is used, read or needed.
 

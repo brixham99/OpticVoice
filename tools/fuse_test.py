@@ -57,7 +57,7 @@ if __name__ == '__main__':
     marks = {'ready': (a0, size())}; shot3(f, 'ov_start.png')
     def say(tag, line, wait):
         a = size(); type_line(f, line); time.sleep(wait); marks[tag] = (a, size())
-    keys_only(f, 'Hello Nathan, are you ready?'); time.sleep(0.4); shot3(f, 'ov_typing.png')
+    keys_only(f, 'Hello Nathan, are you ready?'); time.sleep(0.4)
     a = size(); f.key('Return'); time.sleep(3.5); marks['question'] = (a, size())
     say('welcome', 'Welcome to OpticVoice.', 3.0); shot3(f, 'ov_spoken.png')
     type_line(f, 'PITCH 30'); time.sleep(0.8); say('high', 'Hello Nathan.', 2.5)
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     type_line(f, 'TUNE ON'); time.sleep(0.8); type_line(f, 'PITCH 37'); time.sleep(0.8)
     type_line(f, '4'); time.sleep(0.8); x('xdotool', 'keydown', '--window', f.win, 'space'); time.sleep(0.4)
     x('xdotool', 'keyup', '--window', f.win, 'space'); time.sleep(6)
-    type_line(f, ''); time.sleep(1.5); shot3(f, 'ov_quit.png')
+    type_line(f, ''); time.sleep(1.5)
     shutil.copy(RAW, RAW + '.copy'); f.close(); raw = open(RAW + '.copy', 'rb').read()
     for tag in marks:
         a, b = marks[tag]; print(tag, '%.2f s' % save_segment(raw, a, b, os.path.join(ROOT, 'audio', 'ov_%s.wav' % tag)))

@@ -1,4 +1,4 @@
-# OpticVoice (repository: ZX-Synth-Speak)
+# OpticVoice
 
 **OpticVoice** is a software text-to-speech synthesiser for the 48K Spectrum running
 **OpticOS**, driven from OpticBASIC. Text is converted to SP0256-style
@@ -29,10 +29,8 @@ OpticOS ROM, captured by `tools/fuse_test.py` (3x, 960 x 720).
 
 | | |
 |---|---|
-| ![OpticVoice start-up lines and the Say? prompt](shots/ov_start.png) | ![Typing at the Say? prompt](shots/ov_typing.png) |
-| After `LOAD ""`: name, copyright, acknowledgements, options, `Say?` | Typing text to say |
-| ![Spoken, back at Say?](shots/ov_spoken.png) | ![Commands, SPACE stop and quitting](shots/ov_quit.png) |
-| Spoken, and back at `Say?` | `PITCH`, `TUNE`, a preset stopped with SPACE, empty ENTER quits |
+| ![OpticVoice start-up lines and the Say? prompt](shots/ov_start.png) | ![Text typed at Say? and spoken](shots/ov_spoken.png) |
+| After `LOAD ""`: name, copyright, acknowledgements, options, `Say?` | Two lines typed at `Say?` and spoken; back at `Say?` |
 
 What it prints on RUN (plain lines, no screen clearing):
 
@@ -46,23 +44,7 @@ What it prints on RUN (plain lines, no screen clearing):
     1-5 presets, HELP. ENTER on its own quits.
     Say?
 
-### 128K, AY chip (Fuse `--machine 128`, OpticOS ROM in both ROM slots)
-
-| | |
-|---|---|
-| ![128K: OpticOS boot](shots/fuse128_boot.png) | ![128K: OUT 32765,16 and LOAD ""](shots/fuse128_load.png) |
-| OpticOS on Fuse's 128K machine | `OUT 32765,16` (see below), then `LOAD ""` |
-| ![128K menu](shots/fuse128_menu.png) | ![Presets spoken by the AY](shots/fuse128_ay_spoken.png) |
-| `speech128`: code and four banks loaded | Presets 1, 2, 3, 5 spoken by the AY chip |
-| ![Typing text](shots/fuse128_typing.png) | ![D: beeper](shots/fuse128_beeper.png) |
-| Typing your own text | D switches to the beeper, and back |
-
 ### OpticBASIC 128: a `SAY` keyword (prototype)
-
-| | |
-|---|---|
-| ![SAY typed and spoken](shots/say_spoken.png) | ![say128 loaded](shots/say_loaded.png) |
-| `SAY "HELLO NATHAN"`, `SAY a$` in a PROC, `SAY VOICE`, `SAY PITCH` | `say128.tzx`: `SAY LOAD` fills banks 4, 6, 1, 3 |
 
 On a 128K with OpticOS in ROM slot 0 and the new **extension ROM** in slot 1 (built by
 `tools/gen.py` as `build/opticos128ext.rom`, from `src/ext128_main.asm` and the speech
@@ -394,7 +376,7 @@ model in `ref/vosk/`.
     python3 build.py               # type the demos into the rig, SAVE opticvoice.tap/.tzx, speech128.tap/.tzx and say128.tap/.tzx with the OpticOS ROM
     python3 tools/test_convert.py WORDS…   # Z80 converter == Python reference
     python3 tools/test_play.py "text" …    # USR 45056 in the rig; speaker edges vs the reference; SPACE stop; audio/*.wav
-    python3 tools/fuse_test.py     # real Fuse 48K: OpticVoice start-up, Say?, PITCH/TUNE, SPACE, quit; shots/ov_*.png, audio/ov_*.wav
+    python3 tools/fuse_test.py     # real Fuse 48K: OpticVoice start-up, Say?, PITCH/TUNE, SPACE, quit; shots/ov_start.png, ov_spoken.png, audio/ov_*.wav
     BUILD=128 python3 tools/test_play.py "text" …   # 128K build: beeper from bank 4, AY path with paging emulated
     python3 tools/fuse_say_test.py # real Fuse 128K, OpticOS 128 (branch ROM + extension ROM): SAY; shots/say_*.png, audio/say_*.wav
     python3 tools/fuse128_test.py  # real Fuse 128K: speech128.tzx, AY and beeper; shots/fuse128_*.png, audio/fuse128_*.wav
