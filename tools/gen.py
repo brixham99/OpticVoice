@@ -83,7 +83,8 @@ def ext_source(src):
     variables become equates in the workspace, ext128_main.asm leads, OpticOS addresses from its .sym"""
     import re
     os_sym = {}
-    for l in open(os.path.join(os.environ.get('OPTICOS', '/workspace/opticos-repo'), 'build', 'opticos.sym')):
+    # the OpticOS build with the extension hook (branch opticos128-say): OPTICOS128_SYM, else OPTICOS/build
+    for l in open(os.environ.get('OPTICOS128_SYM') or os.path.join(os.environ.get('OPTICOS', '/workspace/opticos-repo'), 'build', 'opticos.sym')):
         p = l.split()
         if len(p) >= 3 and p[1] == 'EQU': os_sym[p[0]] = int(p[2].rstrip('H'), 16)
     head = ''.join('OS_%s equ $%04X\n' % (k, os_sym[k]) for k in OS_SYMS) + 'OS_ERR_TAPE equ $1A\n'

@@ -27,7 +27,7 @@ EXCEPTIONS = {   # a phoneme ending in 1 is the stressed one (pitch accent); oth
     'A': 'AX', 'THE': 'DH AX', 'OF': 'AX V', 'TO': 'T UW', 'DO': 'D UW', 'YOU': 'Y UW', 'ARE': 'AA R',
     'IS': 'IH Z', 'WAS': 'W AA Z', 'ONE': 'W AH N', 'TWO': 'T UW', 'SAID': 'S EH D', 'SAYS': 'S EH Z',
     'HAVE': 'HH AE V', 'GIVE': 'G IH V', 'LIVE': 'L IH V', 'COME': 'K AH M', 'SOME': 'S AH M',
-    'HELLO': 'HH EH L OW1', 'NATHAN': 'N EY TH AX N', 'OPTICA': 'AA P T IH K AX', 'OPTICOS': 'AA P T IH K AO S',
+    'HELLO': 'HH EH L OW1', 'NATHAN': 'N EY TH AX N', 'OPTICA': 'AA P T IH K AX', 'OPTICOS': 'AA P T IH K AO S', 'OPTICVOICE': 'AA1 P T IH K V OY S', 'VOICE': 'V OY S',
     'ZX': 'Z EH D EH1 K S', 'SPECTRUM': 'S P EH K T R AX M', 'TECHNOLOGY': 'T EH K N AA1 L AX JH IY',
     'DESIGN': 'D IH Z AY1 N', 'BASIC': 'B EY S IH K', 'COMPUTER': 'K AX M P Y UW1 T ER', 'SPEECH': 'S P IY CH',
     'SINCLAIR': 'S IH N K L EH R', 'BEEPER': 'B IY P ER', 'WORLD': 'W ER L D', 'OK': 'OW K EY1',

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Real Fuse (SDL, OpticOS ROM build/opticos.rom from the OpticOS checkout): LOAD "" the
-speech.tzx, let the program start, say presets 1 and 5, change pitch (P) and intonation
-(M), say typed text, stop a long phrase with SPACE, take screenshots (shots/), and record
-Fuse's own sound output (SDL disk audio, throttled to real time with SDL_DISKAUDIODELAY)
-to audio/fuse_*.wav. Usage: python3 tools/fuse_test.py"""
+"""Real Fuse 48K (SDL, OpticOS ROM build/opticos.rom from the OpticOS checkout): LOAD "" the
+opticvoice.tzx (auto-runs: start-up lines, "OpticVoice ready.", Say? prompt), say typed text,
+PITCH / TUNE commands, a preset, SPACE stopping a phrase, empty ENTER to quit, LIST; 3x
+screenshots shots/ov_*.png and Fuse's own sound (SDL disk audio) to audio/ov_*.wav.
+Usage: python3 tools/fuse_test.py"""
 import os, sys, time, subprocess, wave, shutil
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.abspath(os.path.join(HERE, '..'))
@@ -17,7 +17,7 @@ def launch():
     f = Fuse.__new__(Fuse)
     args = ['fuse-sdl', '--machine', '48', '--rom-48', os.path.join(REPO, 'build', 'opticos.rom'), '--no-auto-load',
             '--traps', '--fastload', '--sound', '--sound-freq', '44100', '--no-confirm-actions', '--no-statusbar',
-            '--graphics-filter', 'normal', '--tape', os.path.join(ROOT, 'speech.tzx')]
+            '--graphics-filter', 'normal', '--tape', os.path.join(ROOT, 'opticvoice.tzx')]
     f.p = subprocess.Popen(args, env=env, cwd=DATA, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
     for _ in range(50):
         time.sleep(0.2); w = x('xdotool', 'search', '--pid', str(f.p.pid)).split()
@@ -52,23 +52,20 @@ def keys_only(f, text):
 if __name__ == '__main__':
     subprocess.run(['pkill', '-f', 'fuse-sdl.*opticos'])
     if os.path.exists(RAW): os.remove(RAW)
-    f = launch(); time.sleep(4.5); shot3(f, 'fuse_boot.png')
-    keys_only(f, 'LOAD ""'); time.sleep(0.5); shot3(f, 'fuse_load.png'); f.key('Return'); time.sleep(8)
-    shot3(f, 'fuse_menu.png'); time.sleep(1.0)
-    marks = {}
-    for k, wait in (('1', 3.0), ('5', 4.5)):
-        a = size(); type_line(f, k); time.sleep(wait); marks.setdefault(k, []).append((a, size()))
-    keys_only(f, 'Welcome to OpticOS.'); time.sleep(0.5); shot3(f, 'fuse_typing.png')
-    f.key('Return'); time.sleep(4.0); shot3(f, 'fuse_spoken.png')
-    for k, wait in (('p', 1.0), ('p', 1.0), ('Are you ready?', 3.5), ('m', 1.0), ('Are you ready?', 3.5), ('m', 1.0), ('p', 1.0), ('p', 1.0)):
-        a = size(); type_line(f, k); time.sleep(wait); marks.setdefault(k, []).append((a, size()))
+    f = launch(); time.sleep(4.5)
+    keys_only(f, 'LOAD ""'); time.sleep(0.3); a0 = size(); f.key('Return'); time.sleep(10)
+    marks = {'ready': (a0, size())}; shot3(f, 'ov_start.png')
+    def say(tag, line, wait):
+        a = size(); type_line(f, line); time.sleep(wait); marks[tag] = (a, size())
+    keys_only(f, 'Hello Nathan, are you ready?'); time.sleep(0.4); shot3(f, 'ov_typing.png')
+    a = size(); f.key('Return'); time.sleep(3.5); marks['question'] = (a, size())
+    say('welcome', 'Welcome to OpticVoice.', 3.0); shot3(f, 'ov_spoken.png')
+    type_line(f, 'PITCH 30'); time.sleep(0.8); say('high', 'Hello Nathan.', 2.5)
+    type_line(f, 'TUNE OFF'); time.sleep(0.8); say('monotone', 'Are you ready?', 2.5)
+    type_line(f, 'TUNE ON'); time.sleep(0.8); type_line(f, 'PITCH 37'); time.sleep(0.8)
     type_line(f, '4'); time.sleep(0.8); x('xdotool', 'keydown', '--window', f.win, 'space'); time.sleep(0.4)
-    x('xdotool', 'keyup', '--window', f.win, 'space'); time.sleep(7)
-    shot3(f, 'fuse_stopped.png')
-    type_line(f, ''); time.sleep(1.0); type_line(f, 'LIST'); time.sleep(2.0); shot3(f, 'fuse_listing.png')
+    x('xdotool', 'keyup', '--window', f.win, 'space'); time.sleep(6)
+    type_line(f, ''); time.sleep(1.5); shot3(f, 'ov_quit.png')
     shutil.copy(RAW, RAW + '.copy'); f.close(); raw = open(RAW + '.copy', 'rb').read()
-    for key, name in (('1', 'fuse_hello_nathan.wav'), ('5', 'fuse_question.wav')):
-        a, b = marks[key][0]; print(name, '%.2f s' % save_segment(raw, a, b, os.path.join(ROOT, 'audio', name)))
-    a, b = marks['Are you ready?'][0]; print('fuse_high_pitch.wav %.2f s' % save_segment(raw, a, b, os.path.join(ROOT, 'audio', 'fuse_high_pitch.wav')))
-    a, b = marks['Are you ready?'][1]; print('fuse_monotone.wav %.2f s' % save_segment(raw, a, b, os.path.join(ROOT, 'audio', 'fuse_monotone.wav')))
-    print('saved', OUT)
+    for tag in marks:
+        a, b = marks[tag]; print(tag, '%.2f s' % save_segment(raw, a, b, os.path.join(ROOT, 'audio', 'ov_%s.wav' % tag)))

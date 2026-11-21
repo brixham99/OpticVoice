@@ -28,8 +28,8 @@ def record(b, cmd, name, typ):
 def tape(m128):
     """speech.tap/.tzx (48K) or speech128.tap/.tzx (128K: program, resident code, banks 4, 6, 1, 3)"""
     _, _, _, banks = gen.generate(m128); ORG = gen.ORG128 if m128 else gen.ORG
-    name, cname, bas = ('speech128', 'sp128code', 'speech128.bas') if m128 else ('speech', 'speechcode', 'speech.bas')
-    code = open(os.path.join(HERE, 'build', name + '.bin'), 'rb').read()
+    name, cname, bas = ('speech128', 'sp128code', 'speech128.bas') if m128 else ('opticvoice', 'ovcode', 'opticvoice.bas')
+    code = open(os.path.join(HERE, 'build', ('speech128' if m128 else 'speech') + '.bin'), 'rb').read()
     prog = [l.rstrip() for l in open(os.path.join(HERE, bas)) if l.strip()]
     b = Basic(); s = b.s
     b.line('NEW'); b.enter([l.strip() for l in prog])
@@ -47,7 +47,7 @@ def tape(m128):
     tzx = b'ZXTape!\x1a\x01\x14' + b''.join(b'\x10' + struct.pack('<HH', 1000, len(x)) + x for x in blocks)
     open(os.path.join(HERE, name + '.tzx'), 'wb').write(tzx)
     print('program %s: %d bytes; %s: CODE %d,%d (ends %d); buffers to %d%s' % (
-        name, len(blocks[1]) - 2, cname, ORG, len(code), ORG + len(code) - 1, gen.symbols(name)['bufend'] - 1,
+        name, len(blocks[1]) - 2, cname, ORG, len(code), ORG + len(code) - 1, gen.symbols('speech128' if m128 else 'speech')['bufend'] - 1,
         ''.join('; bank%d CODE 49152,%d' % (bk, len(im)) for bk, im in banks)))
     print('wrote %s.tap (%d bytes) and %s.tzx (%d bytes)' % (name, len(tap), name, len(tzx)))
 def tape_ext():

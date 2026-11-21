@@ -1,6 +1,6 @@
-# ZX-Synth-Speak: OpticOS Speech (phase 3)
+# OpticVoice (repository: ZX-Synth-Speak)
 
-A software text-to-speech synthesiser for the 48K Spectrum running
+**OpticVoice** is a software text-to-speech synthesiser for the 48K Spectrum running
 **OpticOS**, driven from OpticBASIC. Text is converted to SP0256-style
 allophones by the NRL/Elovitz letter-to-sound rules (in Z80 machine code), refined
 with context variants and a simple intonation pass, and played from
@@ -14,27 +14,37 @@ format and API for a future OpticBASIC 128K extension ([below](#128k-version-ay-
 The beeper voice is still there on both machines (D switches on the 128K). Also: word
 stress, and about 80 new exception words.
 
-**Listen:** [`audio/compare_beeper_ay.mp3`](audio/compare_beeper_ay.mp3) (beeper, then AY: "Hello Nathan", "Hello Nathan, are you ready?", recorded from Fuse),
+**Listen:** [`audio/opticvoice_sample.mp3`](audio/opticvoice_sample.mp3) (OpticVoice 48K in Fuse: "OpticVoice ready.", "Hello Nathan, are you ready?", "Welcome to OpticVoice."),
+[`audio/compare_beeper_ay.mp3`](audio/compare_beeper_ay.mp3) (beeper, then AY: "Hello Nathan", "Hello Nathan, are you ready?", recorded from Fuse),
 [`audio/presets_ay.mp3`](audio/presets_ay.mp3) (AY presets, from Fuse),
 [`audio/presets_all.mp3`](audio/presets_all.mp3) (the three presets, beeper),
 [`audio/question.mp3`](audio/question.mp3) ("Hello Nathan, are you ready?"),
 [`audio/compare_phase1_phase2.mp3`](audio/compare_phase1_phase2.mp3) (each phrase as phase 1, then phase 2).
 
-## In Fuse with the OpticOS ROM
+## OpticVoice 48K in Fuse with the OpticOS ROM
 
-Screens from Fuse 1.6.0 (SDL) running `build/opticos.rom`, captured by
-`tools/fuse_test.py` (3x, 960 x 720).
+`LOAD ""` with `opticvoice.tzx`: the program auto-runs, prints what it is, says
+"OpticVoice ready." and asks `Say?`. Screens from Fuse 1.6.0 (SDL, 48K) running the
+OpticOS ROM, captured by `tools/fuse_test.py` (3x, 960 x 720).
 
 | | |
 |---|---|
-| ![OpticOS boot screen](shots/fuse_boot.png) | ![LOAD "" typed](shots/fuse_load.png) |
-| OpticOS starts | `LOAD ""` loads `speech` (auto-runs) and `speechcode` |
-| ![The speech menu](shots/fuse_menu.png) | ![Typing custom text](shots/fuse_typing.png) |
-| The demo menu | Presets 1 and 5 spoken; typing your own text |
-| ![Spoken, back at the prompt](shots/fuse_spoken.png) | ![SPACE stops a phrase](shots/fuse_stopped.png) |
-| Spoken, and back to the `Say?` prompt | Pitch (P), monotone (M), and SPACE stopping a phrase |
-| ![The BASIC listing](shots/fuse_listing.png) | |
-| `LIST`: the OpticBASIC demo (no line numbers) | |
+| ![OpticVoice start-up lines and the Say? prompt](shots/ov_start.png) | ![Typing at the Say? prompt](shots/ov_typing.png) |
+| After `LOAD ""`: name, copyright, acknowledgements, options, `Say?` | Typing text to say |
+| ![Spoken, back at Say?](shots/ov_spoken.png) | ![Commands, SPACE stop and quitting](shots/ov_quit.png) |
+| Spoken, and back at `Say?` | `PITCH`, `TUNE`, a preset stopped with SPACE, empty ENTER quits |
+
+What it prints on RUN (plain lines, no screen clearing):
+
+    OpticVoice 1.0 - text to speech for OpticOS (48K, beeper)
+    (c) 2026 Optica Technology Design
+    Uses the NRL letter-to-sound rules (Elovitz et al., 1976,
+    public domain). Allophone numbering after the GI SP0256-AL2;
+    all sounds newly synthesised. Runs on OpticOS.
+    Type text and press ENTER to hear it; SPACE stops speech.
+    Commands: PITCH n (24-56, 37 normal), TUNE ON, TUNE OFF,
+    1-5 presets, HELP. ENTER on its own quits.
+    Say?
 
 ### 128K, AY chip (Fuse `--machine 128`, OpticOS ROM in both ROM slots)
 
@@ -67,12 +77,15 @@ limitations: [`docs/opticbasic128-say.md`](docs/opticbasic128-say.md). Listen:
 
 ## Quick start
 
-    LOAD ""            (speech.tzx: BASIC "speech" auto-runs, then CODE "speechcode")
+    LOAD ""            (opticvoice.tzx: BASIC "opticvoice" auto-runs, then CODE "ovcode")
 
-The demo offers 1–3 the presets ("Hello Nathan", "Optica Technology Design", "I am
-a ZX Spectrum"), 4 all three, 5 a question, P to step the pitch, M to switch
-intonation on or off, or speaks any text you type. SPACE stops the speech; ENTER on
-its own ends the program.
+At `Say?`, type any text and press ENTER to hear it. A line that is a command is obeyed
+instead (any case): `PITCH n` (24–56, 37 normal, smaller is higher), `TUNE ON` /
+`TUNE OFF` (intonation / monotone), `1`–`5` presets (1 "Hello Nathan", 2 "Optica
+Technology Design", 3 "I am a ZX Spectrum", 4 all three, 5 "Hello Nathan, are you
+ready?"), `HELP` (prints the lines again). SPACE stops the speech; ENTER on its own
+quits to BASIC ("OpticVoice finished. RUN to start again."). RUN again does not reload
+the code if it is still in memory (it checks the "SP" signature and version at 45073).
 
 128K: `speech128.tzx`. Type `OUT 32765,16` then `LOAD ""` (the program `speech128`
 auto-runs, loads `sp128code` and the banks; D switches AY chip / beeper).
@@ -80,7 +93,7 @@ auto-runs, loads `sp128code` and the banks; D switches AY chip / beeper).
 ## Calling it from OpticBASIC
 
     CLEAR 45055
-    LOAD "speechcode" CODE
+    LOAD "ovcode" CODE
     DEF PROC say(s$)
       LOCAL a, i, n
       a = DPEEK(45071)
@@ -118,7 +131,7 @@ auto-runs, loads `sp128code` and the banks; D switches AY chip / beeper).
 
 * Everything from phase 2 is unchanged; version is now 3. New bytes 45080–45088
   (DEVICE, BANKM, detect, directory addresses) are used only by the 128K build.
-* CODE block: `CODE 45056,18203` (phase 2: 17186); the buffers moved up again
+* CODE block: `CODE 45056,18231` (OpticVoice 1.0; phase 3: 18203, phase 2: 17186); the buffers moved up again
   (use `DPEEK(45071)` / `DPEEK(45069)`).
 
 ### Interface changes from phase 1
@@ -138,14 +151,14 @@ auto-runs, loads `sp128code` and the banks; D switches AY chip / beeper).
 | 45056–45088 | B000 | jump table and variables (above) |
 | 45089–46956 | B021 | player, converter, post-pass with stress (1,868 bytes) |
 | 46957–47274 | B76D | rule index, letter classes, variant tables (318) |
-| 47275–50323 | B8AB | NRL rules and ~115 exceptions with stress marks (3,049) |
-| 50324–50451 | C494 | allophone pointer table (128) |
-| 50452–63258 | C514 | allophone waveform data (12,807) |
-| 63259–63778 | F71B | text buffer and word buffer (520) |
-| 63779–64290 | F923 | allophone list buffer (512) |
+| 47275–50351 | B8AB | NRL rules and ~118 exceptions with stress marks (3,077) |
+| 50352–50479 | C4B0 | allophone pointer table (128) |
+| 50480–63286 | C530 | allophone waveform data (12,807) |
+| 63287–63806 | F737 | text buffer and word buffer (520) |
+| 63807–64318 | F93F | allophone list buffer (512) |
 
-Saved block `CODE 45056,18203`; 19,235 bytes in all with the buffers (phase 2:
-18,218). 64291–65535 is untouched (UDGs etc.).
+Saved block `CODE 45056,18231`; 19,263 bytes in all with the buffers (phase 3:
+19,235). 64319–65535 is untouched (UDGs etc.).
 
 ## Intelligibility
 
@@ -378,10 +391,10 @@ For the scores: `pip install vosk openai-whisper` and the vosk-model-small-en-us
 model in `ref/vosk/`.
 
     python3 tools/gen.py           # synthesise + code the allophones, pack rules, assemble both builds and the bank images
-    python3 build.py               # type the demos into the rig, SAVE speech.tap/.tzx and speech128.tap/.tzx with the OpticOS ROM
+    python3 build.py               # type the demos into the rig, SAVE opticvoice.tap/.tzx, speech128.tap/.tzx and say128.tap/.tzx with the OpticOS ROM
     python3 tools/test_convert.py WORDS…   # Z80 converter == Python reference
     python3 tools/test_play.py "text" …    # USR 45056 in the rig; speaker edges vs the reference; SPACE stop; audio/*.wav
-    python3 tools/fuse_test.py     # real Fuse: LOAD "", presets, P/M, SPACE, LIST; shots/*.png, audio/fuse_*.wav
+    python3 tools/fuse_test.py     # real Fuse 48K: OpticVoice start-up, Say?, PITCH/TUNE, SPACE, quit; shots/ov_*.png, audio/ov_*.wav
     BUILD=128 python3 tools/test_play.py "text" …   # 128K build: beeper from bank 4, AY path with paging emulated
     python3 tools/fuse_say_test.py # real Fuse 128K, OpticOS 128 (branch ROM + extension ROM): SAY; shots/say_*.png, audio/say_*.wav
     python3 tools/fuse128_test.py  # real Fuse 128K: speech128.tzx, AY and beeper; shots/fuse128_*.png, audio/fuse128_*.wav
