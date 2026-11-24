@@ -54,7 +54,7 @@ if __name__ == '__main__':
     if os.path.exists(RAW): os.remove(RAW)
     f = launch(); time.sleep(4.5)
     keys_only(f, 'LOAD ""'); time.sleep(0.3); a0 = size(); f.key('Return'); time.sleep(10)
-    marks = {'ready': (a0, size())}; shot3(f, 'ov_start.png')
+    marks = {'ready': (a0, size())}
     def say(tag, line, wait):
         a = size(); type_line(f, line); time.sleep(wait); marks[tag] = (a, size())
     keys_only(f, 'Hello Nathan, are you ready?'); time.sleep(0.4)

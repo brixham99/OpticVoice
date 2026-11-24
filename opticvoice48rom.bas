@@ -1,4 +1,4 @@
-10 REM OpticVoice 1.0 for the standard 48K ROM. (c) 2026 Optica Technology Design. MIT licence (code). CODE "ovcode48" 46080,18231: LET n=USR 46080 says the text at PEEK 46095+256*PEEK 46096 (0 ends it); USR 46083 says the allophone list at 46091/2; USR 46086 converts only. 46097/8 "SP", 46099 stopped, 46100 pitch, 46101 tune, 46102 variants, 46103 version.
+10 REM OpticVoice 1.1 for the standard 48K ROM. (c) 2026 Optica Technology Design. MIT licence (code). CODE "ovcode48" 46080,18231: LET n=USR 46080 says the text at PEEK 46095+256*PEEK 46096 (0 ends it); USR 46083 says the allophone list at 46091/2; USR 46086 converts only. 46097/8 "SP", 46099 stopped, 46100 pitch, 46101 tune, 46102 variants, 46103 version.
 20 CLEAR 46079
 30 IF PEEK 46097<>83 OR PEEK 46098<>80 OR PEEK 46103<>3 THEN LOAD "ovcode48"CODE
 40 GO SUB 500
@@ -8,7 +8,7 @@
 80 PRINT "Say? ";a$
 90 GO SUB 2000: GO TO 60
 500 REM title
-510 PRINT "OpticVoice 1.0 - text to speech"'"for the 48K Spectrum (beeper)"
+510 PRINT "OpticVoice 1.1 - text to speech"'"for the 48K Spectrum (beeper)"
 520 PRINT CHR$ 127;" 2026 Optica Technology Design"
 530 PRINT "Uses the NRL letter-to-sound"'"rules (Elovitz et al., 1976,"'"public domain). Allophone"'"numbering after the GI"'"SP0256-AL2; all sounds newly"'"synthesised. Runs on the"'"standard 48K ROM."
 540 PRINT "Type text and press ENTER to"'"hear it; SPACE stops speech."

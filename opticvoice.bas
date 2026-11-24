@@ -1,5 +1,5 @@
 ' ===========================================================
-' OpticVoice 1.0 - text to speech for OpticOS (48K, beeper)
+' OpticVoice 1.1 - text to speech for OpticOS (48K, beeper)
 ' (c) 2026 Optica Technology Design. MIT licence (code).
 ' LOAD "" runs it. The machine code block "ovcode"
 ' (CODE 45056,...) does the work; it is not reloaded if
@@ -24,7 +24,7 @@ PRINT "OpticVoice finished. RUN to start again."
 END
 '
 DEF PROC title
-  PRINT "OpticVoice 1.0 - text to speech for OpticOS (48K, beeper)"
+  PRINT "OpticVoice 1.1 - text to speech for OpticOS (48K, beeper)"
   PRINT "(c) 2026 Optica Technology Design"
   PRINT "Uses the NRL letter-to-sound rules (Elovitz et al., 1976,"
   PRINT "public domain). Allophone numbering after the GI SP0256-AL2;"

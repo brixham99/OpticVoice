@@ -27,14 +27,11 @@ stress, and about 80 new exception words.
 "OpticVoice ready." and asks `Say?`. Screens from Fuse 1.6.0 (SDL, 48K) running the
 OpticOS ROM, captured by `tools/fuse_test.py` (3x, 960 x 720).
 
-| | |
-|---|---|
-| ![OpticVoice start-up lines and the Say? prompt](shots/ov_start.png) | ![Text typed at Say? and spoken](shots/ov_spoken.png) |
-| After `LOAD ""`: name, copyright, acknowledgements, options, `Say?` | Two lines typed at `Say?` and spoken; back at `Say?` |
+![OpticVoice 1.1 on OpticOS: start-up lines, two lines typed at Say? and spoken](shots/ov_spoken.png)
 
 What it prints on RUN (plain lines, no screen clearing):
 
-    OpticVoice 1.0 - text to speech for OpticOS (48K, beeper)
+    OpticVoice 1.1 - text to speech for OpticOS (48K, beeper)
     (c) 2026 Optica Technology Design
     Uses the NRL letter-to-sound rules (Elovitz et al., 1976,
     public domain). Allophone numbering after the GI SP0256-AL2;
@@ -53,10 +50,7 @@ What it prints on RUN (plain lines, no screen clearing):
 - then `Say?` takes text or the commands `PITCH n`, `TUNE ON`, `TUNE OFF`, `1`–`5` and `HELP`
 - SPACE stops speech, and ENTER on its own quits.
 
-| | |
-|---|---|
-| ![OpticVoice on the standard 48K ROM: start-up lines, text typed at Say? and spoken](shots/ovr_spoken.png) | ![Commands on the standard 48K ROM](shots/ovr_pitch.png) |
-| Start-up lines; two lines typed at `Say?` and spoken | `PITCH`, out-of-range and bad values, `TUNE OFF`/`ON` |
+![OpticVoice 1.1 on the standard 48K ROM: start-up lines, two lines typed at Say? and spoken](shots/ovr_spoken.png)
 
 Listen: [`audio/opticvoice48rom_sample.mp3`](audio/opticvoice48rom_sample.mp3) (Fuse, standard 48K ROM).
 
@@ -418,7 +412,7 @@ model in `ref/vosk/`.
     python3 build.py               # type the demos into the rig, SAVE opticvoice.tap/.tzx, speech128.tap/.tzx and say128.tap/.tzx with the OpticOS ROM
     python3 tools/test_convert.py WORDS…   # Z80 converter == Python reference
     python3 tools/test_play.py "text" …    # USR 45056 in the rig; speaker edges vs the reference; SPACE stop; audio/*.wav
-    python3 tools/fuse_test.py     # real Fuse 48K: OpticVoice start-up, Say?, PITCH/TUNE, SPACE, quit; shots/ov_start.png, ov_spoken.png, audio/ov_*.wav
+    python3 tools/fuse_test.py     # real Fuse 48K: OpticVoice start-up, Say?, PITCH/TUNE, SPACE, quit; shots/ov_spoken.png, audio/ov_*.wav
     BUILD=128 python3 tools/test_play.py "text" …   # 128K build: beeper from bank 4, AY path with paging emulated
     python3 tools/fuse_say_test.py # real Fuse 128K, OpticOS 128 (branch ROM + extension ROM): SAY; shots/say_*.png, audio/say_*.wav
     python3 tools/fuse128_test.py  # real Fuse 128K: speech128.tzx, AY and beeper; shots/fuse128_*.png, audio/fuse128_*.wav
