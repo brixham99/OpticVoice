@@ -46,6 +46,46 @@ What it prints on RUN (plain lines, no screen clearing):
 
 **Memory (48K, OpticOS v1.0.4, measured in Fuse and the test rig):** with OpticVoice loaded and waiting at `Say?`, OpticBASIC's `FREE` reports **13,541 bytes** (13,485 after a phrase has been typed, because `a$` now holds it). The BASIC program takes 2,523 bytes (24048–26570), and its variables and strings take 59 + 20. OpticOS's stacks take 4,864 bytes below RAMTOP 45055. The machine code and data take 18,231 bytes (45056–63286), and the text and allophone buffers take 1,032 (63287–64318). **1,217 bytes (64319–65535) are unused**; OpticOS has no UDGs and doesn't use that area after `CLEAR 45055`.
 
+## OpticVoice for the standard 48K ROM (Sinclair BASIC)
+
+`opticvoice48rom.tzx` (or `.tap`) is the same program for a 48K Spectrum with its standard ROM. It runs on a real Spectrum, on Fuse with a 48K ROM, and on The Spectrum (Retro Games). Type `LOAD ""`; the program runs from line 20. It works exactly like the OpticOS version:
+- the start-up lines are printed (32 columns wide, ending "Runs on the standard 48K ROM.") and it says "OpticVoice ready."
+- then `Say?` takes text or the commands `PITCH n`, `TUNE ON`, `TUNE OFF`, `1`–`5` and `HELP`
+- SPACE stops speech, and ENTER on its own quits.
+
+| | |
+|---|---|
+| ![OpticVoice on the standard 48K ROM: start-up lines, text typed at Say? and spoken](shots/ovr_spoken.png) | ![Commands on the standard 48K ROM](shots/ovr_pitch.png) |
+| Start-up lines; two lines typed at `Say?` and spoken | `PITCH`, out-of-range and bad values, `TUNE OFF`/`ON` |
+
+Listen: [`audio/opticvoice48rom_sample.mp3`](audio/opticvoice48rom_sample.mp3) (Fuse, standard 48K ROM).
+
+- **BASIC:** [`opticvoice48rom.bas`](opticvoice48rom.bas) is plain Sinclair BASIC: `GO SUB`s, `PEEK a+256*PEEK (a+1)`, and `INPUT "Say? "; LINE a$`. Each line is echoed to the screen above, as OpticOS does, and capitals are made by a small loop because there is no `UPPER$`. [`tools/zxbasic.py`](tools/zxbasic.py) tokenises it, using the published keyword codes and 5-byte numbers, and [`tools/build48rom.py`](tools/build48rom.py) writes the tape.
+- **Machine code:** this is the same code, assembled at 46080 instead of 45056. It calls no ROM routines and does not use IY or the alternate registers. It reads only the standard system variables BORDCR (23624) and FLAGS (23611, bit 5), so IY and HL\' are as BASIC left them. Interrupts are off while it speaks and back on when it returns.
+- **Memory:** `CLEAR 46079`, then `CODE "ovcode48" 46080,18231` (to 64310), the text buffer at 64311–64830 and the allophone list at 64831–65342. That leaves 65343–65367 free, and the UDGs at 65368–65535 are untouched.
+- **API:** the same as the OpticOS version, moved up by 1,024:
+
+  | Address | Use |
+  |---|---|
+  | `USR 46080` | say the text |
+  | `USR 46083` | say an allophone list |
+  | `USR 46086` | convert only |
+  | 46089 / 46091 | text and list pointers |
+  | 46093 / 46095 | buffer addresses |
+  | 46097 | "SP" signature |
+  | 46099 | stopped flag |
+  | 46100 | pitch |
+  | 46101 | tune |
+  | 46102 | variants |
+  | 46103 | version (3) |
+
+- **Free memory at `Say?`:** 19,774 bytes by RAMTOP−STKEND (`PEEK 23730+256*PEEK 23731-PEEK 23653-256*PEEK 23654`), or 19,714 by `PRINT 65535-USR 7962`. The program itself is 2,410 bytes.
+- **Differences:**
+  - Lines are re-broken for 32 columns, and the copyright line uses the Spectrum's own © character.
+  - RUN clears the screen, as Sinclair BASIC always does.
+  - BREAK (CAPS SHIFT + SPACE) during speech acts like SPACE. At `Say?`, CAPS SHIFT + 6 stops with "H STOP in INPUT" (`CONTINUE` goes on); quitting ends with "0 OK, 9000:1".
+- **Tested** in Fuse 1.6.0 with a 48K ROM by `tools/fuse48rom_test.py`; supply your own ROM, which is not in this repository. Every command path works, and each phrase lasts the same as on OpticOS. Whisper hears "Hello, Nathan, are you ready?" (OpticOS build: "Hello Nathan, are you ready?") and "Welcome to Optic Toys" (OpticOS build: "Welcome to our toy").
+
 ### OpticBASIC 128: a `SAY` keyword (prototype)
 
 On a 128K with OpticOS in ROM slot 0 and the new **extension ROM** in slot 1 (built by
